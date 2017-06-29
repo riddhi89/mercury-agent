@@ -1,0 +1,9 @@
+inventory:
+  inventory_router: tcp://localhost:9000
+
+rpc:
+  rpc_router: tcp://localhost:9001
+
+backend:
+  service_url: tcp://0.0.0.0:9002
+
