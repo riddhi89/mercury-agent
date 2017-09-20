@@ -146,10 +146,9 @@ def active_computers():
     projection = get_projection_from_qsa()
     paging_data = get_paging_info_from_qsa()
     if not projection:
-        print('projection: ' + str(projection))
         projection = {'active': 1, 'mercury_id': 1}
 
-    return inventory_client.query({'active': {'ne': None}},
+    return inventory_client.query({'active': {'$ne': None}},
                                   projection=projection,
                                   limit=paging_data['limit'],
                                   sort_direction=paging_data['sort_direction'])
@@ -161,7 +160,8 @@ def active_computer(mercury_id):
     if not projection:
         projection = {'active': 1, 'mercury_id': 1}
 
-    c = inventory_client.get_one({'mercury_id': mercury_id}, projection=projection)
+    c = inventory_client.query({'mercury_id': mercury_id, 'active': {'$ne': None}},
+                               projection=projection)
 
     if not c:
         return http_error('mercury_id %s does not exist in inventory' % mercury_id,
