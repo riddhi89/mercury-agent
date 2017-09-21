@@ -146,7 +146,7 @@ def active_computers():
     projection = get_projection_from_qsa()
     paging_data = get_paging_info_from_qsa()
     if not projection:
-        projection = {'active': 1, 'mercury_id': 1}
+        projection = {'mercury_id': 1}
 
     return inventory_client.query({'active': {'$ne': None}},
                                   projection=projection,
