@@ -29,6 +29,5 @@ setup(
         'pyzmq',
         'msgpack-python',
         'mercury-common',
-        'mercury'
     ]
 )
