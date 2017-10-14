@@ -25,8 +25,7 @@ setup(
     author_email='jared.rodriguez@rackspace.com',
     description='Mercury agent, hardware libraries, and inspectors',
     install_requires=[
-        'pyzmq',
-        'msgpack-python',
+        'mercury-common',
         'netifaces',
         'pyudev',
         'python-hpssa',

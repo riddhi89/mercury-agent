@@ -1,2 +1,4 @@
--e git+https://github.com/jr0d/press.git#egg=press
+mercury-common
+python-hpssa
+press
 
