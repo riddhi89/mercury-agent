@@ -76,6 +76,21 @@ def _serialize_capabilities(capabilities):
     return _d
 
 
+def _clean_device_info(device_info):
+    """ 
+    Prepare the device information to be inserted in the inventory database
+    without overwriting data collected asynchronously by setting the dotted 
+    path notation expected in mongodb for nested documents.
+    """
+    clean_device_info = device_info.copy()
+    interfaces = clean_device_info.pop('interfaces', [])
+    for i, interface in enumerate(interfaces):
+        for key, value in interface.items():
+            new_key = 'interfaces.{}.{}'.format(i, key)
+            device_info[new_key] = value
+    return clean_device_info
+
+
 def register(rpc_backend_client, device_info, local_ip, local_ip6, capabilities):
     # There is still some confusion regarding how best to determine what ip
     # to publish. Current wisdom suggest that we find the default gateway,
@@ -107,4 +122,6 @@ def register(rpc_backend_client, device_info, local_ip, local_ip6, capabilities)
         'capabilities': _serialize_capabilities(capabilities)
     }
 
-    return rpc_backend_client.register(device_info, agent_info)
+    # Use device info set for inventory record insertion
+    clean_device_info = _clean_device_info(device_info)
+    return rpc_backend_client.register(clean_device_info, agent_info)
