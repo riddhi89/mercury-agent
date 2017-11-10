@@ -49,9 +49,8 @@ class LLDPInspector(object):
             self.pids[interface]['result'] = {'missing': True}
             return
 
-        self.backend_client.update(
-            self.device_info['mercury_id'],
-            {'interfaces.{}.lldp'.format(self.get_interface_index(interface)): switch_info})
+        switch_info['interface_index'] = self.get_interface_index(interface)
+        self.backend_client.update(self.device_info['mercury_id'], {'lldp': switch_info})
         self.pids[interface]['result'] = switch_info
 
     def cleanup(self):
