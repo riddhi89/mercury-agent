@@ -45,6 +45,6 @@ setup(
     ],
     entry_points="""
     [console_scripts]
-    mercury_agent = mercury.agent.agent:main
+    mercury-agent = mercury.agent.agent:main
     """,
 )
