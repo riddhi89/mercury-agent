@@ -13,9 +13,12 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import logging
 from flask import request
 
 from mercury_api.exceptions import HTTPError
+
+log = logging.getLogger(__name__)
 
 
 def validate_json(f):

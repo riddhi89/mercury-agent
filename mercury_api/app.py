@@ -60,4 +60,4 @@ for url, view_func in api_urls:
 
 if __name__ == '__main__':
     config = get_api_configuration()
-    app.run(host=config.api.host, port=config.api.port, debug=False)
+    app.run(host=config.api.host, port=config.api.port, debug=True)

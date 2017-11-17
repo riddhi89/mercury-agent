@@ -51,5 +51,5 @@ api_urls = [
     ('/api/rpc/jobs/tasks/', JobTaskView.as_view('job_task')),
     ('/api/rpc/jobs/', job_view),
     ('/api/rpc/jobs/<job_id>/', job_view),
-    ('/api/rpc/task/<task_id>/', TaskView.as_view(('task'))),
+    ('/api/rpc/task/<task_id>/', TaskView.as_view('task')),
 ]

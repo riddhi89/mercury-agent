@@ -31,14 +31,15 @@ api_configuration = get_api_configuration()
 class BaseMethodView(MethodView):
     """ Base method view to be used in the app views """
 
-    def __init__(self, *args, **kwargs):
-        super(BaseMethodView, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(BaseMethodView, self).__init__()
         inventory_url = api_configuration.api.inventory.inventory_router
         rpc_url = api_configuration.api.rpc.rpc_router
         self.inventory_client = InventoryClient(inventory_url)
         self.rpc_client = RPCFrontEndClient(rpc_url)
 
-    def get_projection_from_qsa(self):
+    @staticmethod
+    def get_projection_from_qsa():
         """
         Gets the projection from the request url parameters and transforms 
         them into a dictionary.
@@ -53,7 +54,8 @@ class BaseMethodView(MethodView):
 
         return projection or None
 
-    def get_paging_info_from_qsa(self):
+    @staticmethod
+    def get_paging_info_from_qsa():
         """
         Gets the paging delimiters from the url if any, otherwise return
         the defaults from the api configuration.
@@ -88,4 +90,4 @@ class BaseMethodView(MethodView):
         limit = paging_data.get('limit')
         sort_direction = paging_data.get('sort_direction')
 
-        return (limit, sort_direction)
+        return limit, sort_direction
