@@ -20,7 +20,6 @@ from gevent.wsgi import WSGIServer
 from mercury_api.configuration import get_api_configuration
 from mercury_api.app import app
 
-
 log = logging.getLogger(__name__)
 
 
@@ -29,8 +28,8 @@ def main():
     Gevent WSGI server launcher with graceful stop.
     """
     config = get_api_configuration()
-    logging.basicConfig(level=logging.getLevelName(config.log_level),
-                        format=config.log_format)
+    logging.basicConfig(
+        level=logging.getLevelName(config.log_level), format=config.log_format)
     http_server = WSGIServer((config.api.host, config.api.port), app)
 
     try:

@@ -24,7 +24,6 @@ from mercury.common.clients.rpc.frontend import RPCFrontEndClient
 
 from mercury_api.configuration import get_api_configuration
 
-
 log = logging.getLogger(__name__)
 api_configuration = get_api_configuration()
 

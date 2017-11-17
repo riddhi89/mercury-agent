@@ -41,16 +41,26 @@ class ActiveComputerView(BaseMethodView):
             if not projection:
                 projection = {'mercury_id': 1}
 
-            data = self.inventory_client.query({'active': {'$ne': None}},
-                                               projection=projection,
-                                               limit=limit,
-                                               sort_direction=sort_direction)
+            data = self.inventory_client.query(
+                {
+                    'active': {
+                        '$ne': None
+                    }
+                },
+                projection=projection,
+                limit=limit,
+                sort_direction=sort_direction)
         else:
 
             if not projection:
                 projection = {'active': 1, 'mercury_id': 1}
             data = self.inventory_client.get_one(
-                {'mercury_id': mercury_id, 'active': {'$ne': None}},
+                {
+                    'mercury_id': mercury_id,
+                    'active': {
+                        '$ne': None
+                    }
+                },
                 projection=projection)
             if not data:
                 message = 'mercury_id {} does not exist in inventory'
@@ -75,8 +85,9 @@ class ActiveComputerQueryView(BaseMethodView):
         query.update({'active': {'$ne': None}})
         projection = self.get_projection_from_qsa()
         limit, sort_direction = self.get_limit_and_sort_direction()
-        data = self.inventory_client.query(query,
-                                           projection=projection,
-                                           limit=limit,
-                                           sort_direction=sort_direction)
+        data = self.inventory_client.query(
+            query,
+            projection=projection,
+            limit=limit,
+            sort_direction=sort_direction)
         return jsonify(data)

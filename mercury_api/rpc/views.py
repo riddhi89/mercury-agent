@@ -39,8 +39,8 @@ class JobView(BaseMethodView):
         else:
             data = self.rpc_client.get_job(job_id, projection)
             if not data:
-                raise HTTPError('Job {} does not exist'.format(job_id),
-                                status_code=404)
+                raise HTTPError(
+                    'Job {} does not exist'.format(job_id), status_code=404)
         return jsonify(data)
 
     def post(self):
@@ -51,15 +51,16 @@ class JobView(BaseMethodView):
         """
         instruction = request.json.get('instruction')
         if not isinstance(instruction, dict):
-            raise HTTPError('Command is missing from request or is malformed',
-                            status_code=400)
+            raise HTTPError(
+                'Command is missing from request or is malformed',
+                status_code=400)
         query = request.json.get('query')
         job_id = self.rpc_client.create_job(query, instruction)
 
         if not job_id:
-            raise HTTPError('Query did not match any active agents',
-                            status_code=404)
-        return job_id
+            raise HTTPError(
+                'Query did not match any active agents', status_code=404)
+        return jsonify(job_id)
 
 
 class JobStatusView(BaseMethodView):
@@ -73,9 +74,9 @@ class JobStatusView(BaseMethodView):
         :return: Job status dictionary. 
         """
         job = self.rpc_client.get_job_status(job_id)
-        if not jobs:
-            raise HTTPError('Job {} does not exist'.format(job_id),
-                            status_code=404)
+        if not job:
+            raise HTTPError(
+                'Job {} does not exist'.format(job_id), status_code=404)
         return jsonify(job)
 
 
@@ -92,8 +93,8 @@ class JobTaskView(BaseMethodView):
         projection = self.get_projection_from_qsa()
         tasks = self.rpc_client.get_job_tasks(job_id, projection)
         if tasks['count'] == 0:
-            raise HTTPError('No tasks exist for job {}'.format(job_id),
-                            status_code=404)
+            raise HTTPError(
+                'No tasks exist for job {}'.format(job_id), status_code=404)
         return jsonify(tasks)
 
 

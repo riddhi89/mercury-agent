@@ -22,13 +22,14 @@ def validate_json(f):
     """
     Validates the request json body and headers when receiving a POST request.
     """
+
     def wrapper(*args, **kwargs):
         try:
             # If the application content type is not set then
             # request.json is None
             if request.method == 'POST' and not request.json:
-                raise HTTPError('JSON request or mimetype is missing',
-                                status_code=400)
+                raise HTTPError(
+                    'JSON request or mimetype is missing', status_code=400)
         except ValueError:
             body = request.body.read()
             log.debug('JSON request is malformed: {}'.format(body))
@@ -42,9 +43,10 @@ def check_query(f):
     """
     Validates that there is a query dictionary in the request body.
     """
+
     def wrapper(*args, **kwargs):
-        if (request.method == 'POST' and
-                not isinstance(request.json.get('query'), dict)):
+        if (request.method == 'POST'
+                and not isinstance(request.json.get('query'), dict)):
             raise HTTPError('JSON request is malformed', status_code=400)
         return f(*args, **kwargs)
 

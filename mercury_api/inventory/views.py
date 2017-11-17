@@ -21,7 +21,6 @@ from mercury_api.views import BaseMethodView
 from mercury_api.exceptions import HTTPError
 from mercury_api.decorators import validate_json, check_query
 
-
 log = logging.getLogger(__name__)
 
 
@@ -41,13 +40,14 @@ class ComputerView(BaseMethodView):
         if mercury_id is None:
             projection = self.get_projection_from_qsa()
             limit, sort_direction = self.get_limit_and_sort_direction()
-            data = self.inventory_client.query({},
-                                               projection=projection,
-                                               limit=limit,
-                                               sort_direction=sort_direction)
+            data = self.inventory_client.query(
+                {},
+                projection=projection,
+                limit=limit,
+                sort_direction=sort_direction)
         else:
-            data = self.inventory_client.get_one(mercury_id,
-                                                 projection=projection)
+            data = self.inventory_client.get_one(
+                mercury_id, projection=projection)
 
             if not data:
                 message = 'mercury_id {} does not exist in inventory'
@@ -72,10 +72,11 @@ class ComputerQueryView(BaseMethodView):
         limit, sort_direction = self.get_limit_and_sort_direction()
         log.debug('QUERY: {}'.format(query))
 
-        data = self.inventory_client.query(query,
-                                           projection=projection,
-                                           limit=limit,
-                                           sort_direction=sort_direction)
+        data = self.inventory_client.query(
+            query,
+            projection=projection,
+            limit=limit,
+            sort_direction=sort_direction)
         return jsonify(data)
 
 

@@ -36,10 +36,8 @@ class TransactionFilter(logging.Filter):
         return True
 
 
-formatter = logging.Formatter(
-    "%(utcnow)s : %(levelname)s client=%(client)s "
-    "[%(method)s] url=%(url)s : %(message)s"
-)
+formatter = logging.Formatter("%(utcnow)s : %(levelname)s client=%(client)s "
+                              "[%(method)s] url=%(url)s : %(message)s")
 
 
 def setup_logging(app):

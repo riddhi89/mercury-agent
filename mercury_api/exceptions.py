@@ -13,20 +13,19 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+
 class HTTPError(Exception):
     """
     Generic exception to be used when raising http errors in the application
     and transforms the message into a dictionary to be used by the app error
     handler.
     """
+
     def __init__(self, message, status_code=400):
         Exception.__init__(self)
         self.message = message
         self.status_code = status_code
 
     def to_dict(self):
-        payload = {
-            'error': True,
-            'message': self.message
-        }
+        payload = {'error': True, 'message': self.message}
         return payload

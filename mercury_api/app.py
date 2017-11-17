@@ -20,11 +20,11 @@ from mercury_api.exceptions import HTTPError
 from mercury_api.transaction_log import setup_logging
 from mercury_api.urls import api_urls
 
-
 app = Flask(__name__)
 
 # Set default app logging
 log = setup_logging(app)
+
 
 # Attach http error handler
 @app.errorhandler(HTTPError)
@@ -40,6 +40,7 @@ def http_error(error):
     log.error(error.message)
     return response
 
+
 # Attach transactional log handler
 @app.after_request
 def log_request(response):
@@ -52,11 +53,11 @@ def log_request(response):
     log.info(response.status)
     return response
 
+
 # Add url rules
 for url, view_func in api_urls:
     app.add_url_rule(url, view_func=view_func)
 
-
 if __name__ == '__main__':
     config = get_api_configuration()
-    app.run(host=config.api.host, port=config.api.port, debug=True)
+    app.run(host=config.api.host, port=config.api.port, debug=False)
