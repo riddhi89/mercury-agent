@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name='mercury-api',
-    version='0.0.1',
+    version='0.0.2',
     packages=['mercury_api'],
     url='https://www.rackspace.com',
     license='',
@@ -25,9 +25,15 @@ setup(
     author_email='jared.rodriguez@rackspace.com',
     description='The mercury front end HTTP API',
     install_requires=[
-        'bottle',
+        'flask',
         'pyzmq',
         'msgpack-python',
         'mercury-common',
-    ]
+        'gevent',
+    ],
+    entry_points={
+        'console_scripts': [
+            'mercury-api = mercury_api.server:main'
+        ]
+    }
 )
