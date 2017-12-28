@@ -29,7 +29,8 @@ def main():
     """
     config = get_api_configuration()
     logging.basicConfig(
-        level=logging.getLevelName(config.log_level), format=config.log_format)
+        level=logging.getLevelName(config.logging.level),
+        format=config.logging.format)
     http_server = WSGIServer((config.api.host, config.api.port), app)
 
     try:
