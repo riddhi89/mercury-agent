@@ -19,7 +19,7 @@ import pytest
 
 import netifaces
 
-import mercury.inspector.hwlib.network_interfaces as net_ifs
+import mercury_agent.inspector.hwlib.network_interfaces as net_ifs
 from tests.unit.base import MercuryAgentUnitTest
 
 

@@ -1,5 +1,5 @@
 from pprint import pprint
-from mercury.inspector import inspect
+from mercury_agent.inspector import inspect
 
 
 pprint(inspect.inspect())

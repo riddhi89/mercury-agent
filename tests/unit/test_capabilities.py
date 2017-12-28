@@ -16,7 +16,7 @@
 
 import mock
 
-from mercury.agent import capabilities
+from mercury_agent import capabilities
 
 
 def test_add_capability():

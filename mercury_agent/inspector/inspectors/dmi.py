@@ -12,29 +12,17 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-from setuptools import setup, find_packages
+
+from . import inspector
+from mercury_agent.inspector.hwlib.sysfs import DMI
 
 
-setup(
-    name='mercury-agent',
-    version='0.1.0',
-    packages=find_packages(exclude=['tests']),
-    url='http://www.mercurysoft.io',
-    license='Apache-2.0',
-    author='Jared Rodriguez',
-    author_email='jared.rodriguez@rackspace.com',
-    description='Mercury agent, hardware libraries, and inspectors',
-    install_requires=[
-        'mercury',
-        'netifaces',
-        'pyudev',
-        'python-hpssa',
-        'lxml',
-        'press',
-        'six'
-    ],
-    entry_points="""
-    [console_scripts]
-    mercury-agent = mercury_agent.agent:main
-    """,
-)
+@inspector.expose('dmi')
+def dmi_inspector():
+    dmi = DMI()
+    return dmi.dump()
+
+if __name__ == '__main__':
+    import pprint
+
+    pprint.pprint(dmi_inspector())

@@ -17,7 +17,7 @@
 import mock
 import pytest
 
-import mercury.inspector.hwlib.cpuinfo as cpuinfo
+import mercury_agent.inspector.hwlib.cpuinfo as cpuinfo
 from tests.unit.base import MercuryAgentUnitTest
 
 

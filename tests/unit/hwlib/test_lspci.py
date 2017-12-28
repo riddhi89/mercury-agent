@@ -17,7 +17,7 @@
 import mock
 import pytest
 
-import mercury.inspector.hwlib.lspci as lspci
+import mercury_agent.inspector.hwlib.lspci as lspci
 from tests.unit.base import MercuryAgentUnitTest
 
 EXAMPLE_LSPCI_OUTPUT = """Slot:	00:00.0
