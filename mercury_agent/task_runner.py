@@ -26,10 +26,21 @@ log = logging.getLogger(__name__)
 class TaskRunner(object):
     """
     """
-    # TODO: Implement as a function
     def __init__(self, job_id, task_id, entry, backend_url,
                  entry_args=None, entry_kwargs=None, lock=None,
                  timeout=0, task_id_kwargs=False):
+        """
+
+        :param job_id:
+        :param task_id:
+        :param entry:
+        :param backend_url:
+        :param entry_args:
+        :param entry_kwargs:
+        :param lock:
+        :param timeout:
+        :param task_id_kwargs:
+        """
         self.job_id = job_id
         self.task_id = task_id
         self.entry = entry
@@ -47,8 +58,7 @@ class TaskRunner(object):
 
     def __management_thread(self):
         """
-        Async thread to support shared locking. Forks the entry into it's own memory space
-        so that we can use signals to trigger timeouts
+        Thread to support shared locking.
         :return:
         """
         self.time_started = time.time()
@@ -63,9 +73,11 @@ class TaskRunner(object):
                 status = 'SUCCESS'
         except Exception:
             exc_dict = parse_exception()
-            log.error(fancy_traceback_short(exc_dict, 'Critical error while running task: %s [%s], elapsed' % (
-                                            self.entry.__name__,
-                                            self.task_id)),
+            log.error(fancy_traceback_short(exc_dict,
+                                            'Critical error while running task:'
+                                            ' %s [%s], elapsed' % (
+                                                self.entry.__name__,
+                                                self.task_id)),
                       extra={'task_id': self.task_id, 'job_id': self.job_id})
             traceback_info = parse_exception()
             status = 'ERROR'
@@ -100,5 +112,6 @@ class TaskRunner(object):
     def run(self):
         log.info('Starting task: %s [%s]' % (self.entry.__name__, self.task_id),
                  extra={'task_id': self.task_id, 'job_id': self.job_id})
-        t = threading.Thread(target=self.__management_thread, name='_{}_{}'.format(self.job_id, self.task_id))
+        t = threading.Thread(target=self.__management_thread,
+                             name='_{}_{}'.format(self.job_id, self.task_id))
         t.start()
