@@ -35,21 +35,21 @@ job_view = JobView.as_view('job')
 
 api_urls = [
     # Inventory url rules
-    ('/api/inventory/computers/query/',
+    ('/api/inventory/computers/query',
      ComputerQueryView.as_view('computer_query')),
-    ('/api/inventory/computers/count/',
+    ('/api/inventory/computers/count',
      ComputerCountView.as_view('computer_count')),
-    ('/api/inventory/computers/', computer_view),
-    ('/api/inventory/computers/<mercury_id>/', computer_view),
+    ('/api/inventory/computers', computer_view),
+    ('/api/inventory/computers/<mercury_id>', computer_view),
     # Active computer url rules
-    ('/api/active/computers/query/',
+    ('/api/active/computers/query',
      ActiveComputerQueryView.as_view('active_computer_query')),
-    ('/api/active/computers/', active_computer_view),
-    ('/api/active/computers/<mercury_id>/', active_computer_view),
+    ('/api/active/computers', active_computer_view),
+    ('/api/active/computers/<mercury_id>', active_computer_view),
     # RPC url rules
-    ('/api/rpc/jobs/status/', JobStatusView.as_view('job_status')),
-    ('/api/rpc/jobs/tasks/', JobTaskView.as_view('job_task')),
-    ('/api/rpc/jobs/', job_view),
-    ('/api/rpc/jobs/<job_id>/', job_view),
-    ('/api/rpc/task/<task_id>/', TaskView.as_view('task')),
+    ('/api/rpc/jobs/status', JobStatusView.as_view('job_status')),
+    ('/api/rpc/jobs/tasks', JobTaskView.as_view('job_task')),
+    ('/api/rpc/jobs', job_view),
+    ('/api/rpc/jobs/<job_id>', job_view),
+    ('/api/rpc/task/<task_id>', TaskView.as_view('task')),
 ]

@@ -56,7 +56,7 @@ def log_request(response):
 
 # Add url rules
 for url, view_func in api_urls:
-    app.add_url_rule(url, view_func=view_func)
+    app.add_url_rule(url, view_func=view_func, strict_slashes=False)
 
 if __name__ == '__main__':
     config = get_api_configuration()
