@@ -11,7 +11,7 @@ services:
         ports:
             - '9005:9005'
         environment:
-            MERCURY_REPO_DIR: mercury
+            MERCURY_REPO_DIR: mercury-api
             MERCURY_LOG_LEVEL: DEBUG
             MERCURY_API_INVENTORY_ROUTER: tcp://172.16.200.103:9000
             MERCURY_API_RPC_ROUTER: tcp://172.16.200.104:9001

@@ -15,7 +15,10 @@ if [ -n "${MERCURY_API_RPC_ROUTER}" ]; then
 fi
 
 # All variables defined via Docker-Compose Environment
-mercury-api ${MERCURY_LOG_ARGS}
+# for some reason this doesn't seem to work
+# mercury-api ${MERCURY_LOG_ARGS}
+# while this does:
+python -c "import mercury_api.server; mercury_api.server.main()"
 
 echo "Waiting for docker termination"
 while true
