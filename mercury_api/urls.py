@@ -47,8 +47,8 @@ api_urls = [
     ('/api/active/computers', active_computer_view),
     ('/api/active/computers/<mercury_id>', active_computer_view),
     # RPC url rules
-    ('/api/rpc/jobs/status', JobStatusView.as_view('job_status')),
-    ('/api/rpc/jobs/tasks', JobTaskView.as_view('job_task')),
+    ('/api/rpc/jobs/status/<job_id>', JobStatusView.as_view('job_status')),
+    ('/api/rpc/jobs/tasks/<job_id>', JobTaskView.as_view('job_task')),
     ('/api/rpc/jobs', job_view),
     ('/api/rpc/jobs/<job_id>', job_view),
     ('/api/rpc/task/<task_id>', TaskView.as_view('task')),
