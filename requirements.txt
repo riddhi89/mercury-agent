@@ -1,4 +1,3 @@
-mercury-common
+mercury
 python-hpssa
 press
-

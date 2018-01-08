@@ -17,7 +17,7 @@
 import mock
 import pytest
 
-import mercury.inspector.hwlib.iproute2 as ipr2
+import mercury_agent.inspector.hwlib.iproute2 as ipr2
 from tests.unit.base import MercuryAgentUnitTest
 
 

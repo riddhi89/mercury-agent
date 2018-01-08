@@ -18,7 +18,7 @@
 import os
 import unittest
 
-from mercury.hardware.raid.interfaces.hpsa.hpssa import (
+from mercury_agent.hardware.raid.interfaces.hpsa.hpssa import (
     parse_show_config
 )
 

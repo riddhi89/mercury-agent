@@ -6,7 +6,7 @@ import mock
 
 from hpssa.hpssa import Adapter
 
-from mercury.hardware.drivers.hp_raid import (
+from mercury_agent.hardware.drivers.hp_raid import (
     RAIDAbstractionException,
     SmartArrayActions,
     SmartArrayDriver

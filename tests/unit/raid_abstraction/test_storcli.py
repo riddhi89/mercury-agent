@@ -1,8 +1,8 @@
 import mock
 import os
 
-from mercury.common.helpers.cli import CLIResult
-from mercury.hardware.raid.interfaces.megaraid import storcli
+from mercury_agent.common.helpers.cli import CLIResult
+from mercury_agent.hardware.raid.interfaces.megaraid import storcli
 
 from ..base import MercuryAgentUnitTest
 
