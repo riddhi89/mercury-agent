@@ -28,7 +28,7 @@ setup(
         'flask',
         'pyzmq',
         'msgpack-python',
-        'mercury',
+        'mercury-core',
         'gevent',
     ],
     entry_points={
