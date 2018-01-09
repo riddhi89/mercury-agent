@@ -34,7 +34,9 @@ def raid_inspector(device_info):
 
     for driver in drivers:
         log.info('Running RAID inspector %s' % driver.name)
+
         data = driver.inspect()
+
         if isinstance(data, list):
             _inspected += data
         else:
