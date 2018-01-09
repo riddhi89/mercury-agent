@@ -1,3 +1,5 @@
 mercury-core
 python-hpssa
 press
+msgpack-python
+pyzmq

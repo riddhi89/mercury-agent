@@ -15,32 +15,74 @@
 
 import logging
 
-from mercury.common.configuration import get_configuration
-from mercury.common.exceptions import MercuryConfigurationError
-
-__all__ = ['AGENT_CONFIG_FILE', 'agent_configuration']
+from mercury.common.configuration import MercuryConfiguration
 
 
 log = logging.getLogger(__name__)
 
 # Helpers
-DEFAULT_AGENT_CONFIG_FILE = 'mercury-agent.yaml'
+AGENT_CONFIG_FILE = 'mercury-agent.yaml'
 
 
-agent_configuration = {}
-remote_configuration = {}
+__configuration = {}
 
 
-def set_agent_configuration(namespace):
-    global agent_configuration
-    global remote_configuration
-    configuration_file = namespace.config_file or DEFAULT_AGENT_CONFIG_FILE
-    agent_configuration.update(**get_configuration(configuration_file))
-    if not agent_configuration:
-        raise MercuryConfigurationError('Configuration file is missing')
-    if namespace.debug:
-        logging.basicConfig(level=logging.DEBUG)
-        log.info('Setting log level to DEBUG')
-        agent_configuration.get('agent', {})['log_level'] = 'DEBUG'
+def parse_options():
+    configuration = MercuryConfiguration(
+        'mercury-agent',
+        AGENT_CONFIG_FILE,
+        description='The Mercury Agent'
+    )
 
-    remote_configuration.update(**agent_configuration['remote'])
+    configuration.add_option('agent.bind_address',
+                             help_string='The interface and port for socket '
+                                         'binding',
+                             default='tcp://127.0.0.1:9003'),
+
+    configuration.add_option('agent.pong_bind_address',
+                             help_string='Interface and port for the pong'
+                                         'service',
+                             default='tcp://127.0.0.1:9004')
+
+    configuration.add_option('agent.dhcp_ip_source',
+                             help_string='The method of determining dhcp_ip',
+                             default='simple',
+                             one_of=['simple', 'udhcpd', 'routing_table'])
+
+    configuration.add_option('agent.remote.backend_url',
+                             help_string='The ZeroMQ URL of the backend '
+                                         'service',
+                             required=True)
+
+    configuration.add_option('agent.remote.log_service_url',
+                             help_string='Optional logging service zURL')
+
+    configuration.add_option('agent.hardware.raid.storcli_path',
+                             cli_argument='--storcli_path',
+                             env_variable='STORCLI_PATH',
+                             default='storcli64')
+
+    configuration.add_option('agent.hardware.raid.hpssacli_path',
+                             cli_argument='--hpssacli_path',
+                             env_variable='HPSSACLI_PATH',
+                             default='hpssacli')
+
+    configuration.add_option('agent.local_ip',
+                             cli_argument='--local-ip',
+                             env_variable='MERCURY_AGENT_ADDRESS',
+                             help_string='The address which will be advertised'
+                                         'to the backend for communication with'
+                                         'this agent')
+    configuration.add_option('agent.pong_log_level',
+                             cli_argument='--pong-log-level',
+                             default='ERROR',
+                             help_string='The pong process log level')
+
+    return configuration.scan_options()
+
+
+def get_configuration():
+    global __configuration
+    if not __configuration:
+        __configuration = parse_options()
+    return __configuration

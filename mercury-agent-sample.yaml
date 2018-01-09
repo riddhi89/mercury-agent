@@ -1,21 +1,17 @@
 agent:
   service_bind_address: tcp://0.0.0.0:9003
   pong_bind_address: tcp://0.0.0.0:9004
-  rpc_port: 9003
-  ping_port: 9004
   dhcp_ip_source: simple
   log_file: mercury-agent.log
-  log_level: INFO
-  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
-remote:
-  rpc_service: tcp://localhost:9002
-  log_service: tcp://localhost:9006
+  remote:
+    backend_url: tcp://localhost:9002
+    log_service_url: tcp://localhost:9006
 
-hardware:
-  raid:
-    storcli_path: storcli64
-    hpssacli_path: hpssacli
+  hardware:
+    raid:
+      storcli_path: storcli64
+      hpssacli_path: hpssacli
 
 press_environment:
   paths:
@@ -41,3 +37,6 @@ press_environment:
 
     volume_group:
       pe_size: 4MiB
+
+logging:
+  level: INFO
