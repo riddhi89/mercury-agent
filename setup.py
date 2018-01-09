@@ -25,7 +25,7 @@ setup(
     author_email='jared.rodriguez@rackspace.com',
     description='Mercury agent, hardware libraries, and inspectors',
     install_requires=[
-        'mercury',
+        'mercury-core',
         'netifaces',
         'pyudev',
         'python-hpssa',
