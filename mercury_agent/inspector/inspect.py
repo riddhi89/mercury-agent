@@ -13,9 +13,14 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import logging
+
 from mercury_agent.inspector.inspectors import inspectors, late_inspectors
 from mercury_agent.hardware.drivers import registered_drivers, set_driver_cache
 from mercury.common.mercury_id import generate_mercury_id
+from mercury.common.exceptions import fancy_traceback_short, parse_exception
+
+log = logging.getLogger(__name__)
 
 # Global storage for device_info it is mostly read only and only overwritten during
 # inspector runs
@@ -46,7 +51,19 @@ def inspect():
     for driver in registered_drivers:
         _wants = driver['class'].wants
 
-        devices = driver['class'].probe(_wants and collected[_wants] or collected)
+        # noinspection PyBroadException
+        try:
+            devices = driver['class'].probe(
+                _wants and collected[_wants] or collected)
+        except Exception:
+            # probe is implemented in each driver and is not wrapped
+            # handle probe errors gracefully and soldier on
+            log.error(fancy_traceback_short(
+                parse_exception(),
+                preamble='Probe function failed for driver {}'.format(
+                    driver['name']
+                )))
+            continue
         if devices:
             set_driver_cache(driver, devices)
 
