@@ -62,7 +62,17 @@ class TaskRunner(object):
         :return:
         """
         self.time_started = time.time()
-        traceback_info = None
+
+        # Set task to STARTED status
+        self.backend.update_task(
+            {
+                'task_id': self.task_id,
+                'status': 'STARTED',
+                'time_started': self.time_started
+            }
+        )
+
+        traceback = None
         # noinspection PyBroadException
         try:
             return_data = self.entry(*self.args, **self.kwargs)
@@ -79,7 +89,7 @@ class TaskRunner(object):
                                                 self.entry.__name__,
                                                 self.task_id)),
                       extra={'task_id': self.task_id, 'job_id': self.job_id})
-            traceback_info = parse_exception()
+            traceback = parse_exception()
             status = 'ERROR'
             return_data = None
         finally:
@@ -99,7 +109,7 @@ class TaskRunner(object):
         response = self.backend.complete_task({
             'status': status,
             'message': return_data,
-            'traceback_info': traceback_info,
+            'traceback': traceback,
             'job_id': self.job_id,
             'task_id': self.task_id,
             'time_started': self.time_started,
