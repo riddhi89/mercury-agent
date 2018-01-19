@@ -183,7 +183,7 @@ class SmartArrayActions(RAIDActions):
 
         adapter_details = {
             'name': adapter['name'],
-            'provider': 'hspa',
+            'provider': 'hpsa',
             'vendor_info': self.get_vendor_info(adapter),
             'configuration': self.transform_configuration(adapter['configuration'])
         }
@@ -267,23 +267,30 @@ class SmartArrayActions(RAIDActions):
         return self.hpssa.delete_all_logical_drives(
             self.get_slot(self.get_adapter_info(adapter)))
 
-    def add_spares(self, adapter, array, drives):
+    def add_spares(self, adapter, drives, arrays=None):
         """
         Implementation of RAIDActions.add_spares
 
         :param adapter: adapter index
-        :param array: array index
+        :param arrays: array indexes
         :param drives: RAIDActions drive selection
         :return:
         """
         adapter_info = self.get_adapter_info(adapter)
         slot = self.get_slot(adapter_info)
 
-        array_letter = self.get_letter_from_index(adapter_info, array)
+        if arrays:
+            array_letters = [self.get_letter_from_index(adapter_info, array)
+                             for array in arrays]
+        else:
+            array_letters = None
+
         target_drives = self.get_drives_from_selection(adapter, drives)
 
-        return self.hpssa.add_spares(slot, array_letter,
-                                     ','.join([self.assemble_drive(d) for d in target_drives]))
+        return self.hpssa.add_spares(slot,
+                                     ','.join([self.assemble_drive(d)
+                                               for d in target_drives]),
+                                     array_letters)
 
 
 @driver()
@@ -319,8 +326,6 @@ class SmartArrayDriver(PCIDriverBase):
             _a = dict(**self.handler.get_adapter_info(idx))
             adapter_obj = self.handler.hpssa.adapters[idx]
             _a.update({
-                'total_drives': adapter_obj.total_drives,
-                'total_size': adapter_obj.total_size,
                 'adapter_handler': self.name
             })
 

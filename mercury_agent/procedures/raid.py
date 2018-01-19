@@ -118,12 +118,12 @@ def abstract_clear_configuration(adapter):
 
 @capability('add_spares',
             description='Assign spare drives to the array',
-            kwarg_names=['adapter', 'array', 'drives'],
+            kwarg_names=['adapter', 'drives'],
             serial=True,
             dependency_callback=has_abstraction_handler,
             timeout=120)
 @update_on_change
-def abstract_add_spares(adapter, array, drives):
+def abstract_add_spares(adapter, drives, array=None):
     """
     :param adapter:
     :param array:
@@ -131,4 +131,4 @@ def abstract_add_spares(adapter, array, drives):
     :return:
     """
     raid_driver = get_subsystem_drivers('raid')[0]
-    return raid_driver.handler.add_spares(adapter, array, drives)
+    return raid_driver.handler.add_spares(adapter, drives, array)

@@ -66,6 +66,46 @@ class Storcli(object):
 
         return [c['Response Data'] for c in controllers]
 
+    def get_enclosures(self, controller='all'):
+        """ Returns enclosures in a flattened list
+        :param controller: one or all controllers
+        :return: List of enclosure objects
+        """
+        output = self.run_json('/c{}/eall show all'.format(controller))
+        try:
+            controllers = output['Controllers']
+        except KeyError:
+            raise StorcliException('Output is missing Controllers segment')
+
+        return [c['Response Data'] for c in controllers]
+
+    @staticmethod
+    def check_command_status(data):
+        if data['Command Status']['Status'] != 'Success':
+            raise StorcliException('{}\n'.format(
+                data['Command Status']['Description'],
+                '\n'.join(data['Command Status']['Detailed Status'])))
+
+    def get_disk_group(self, controller='all', disk_group='all'):
+        """
+
+        :param controller:
+        :param disk_group:
+        :return:
+        """
+        output = self.run_json('/c{}/d{} show all'.format(controller,
+                                                          disk_group))
+
+        controller_list = []
+        for controller in output['Controllers']:
+            self.check_command_status(controller)
+            # Account for some crazy JSON schema
+            controller_list.append(
+                controller['Response Data']['Response Data']
+            )
+
+        return controller_list
+
     def delete(self, controller, virtual_drive='all'):
         """ Delete one or all virtual drives on a controller
         :param controller: Controller ID
@@ -74,15 +114,15 @@ class Storcli(object):
         """
         return self.run('/c{} /v{} del force'.format(controller, virtual_drive))
 
-    def add(self, controller, array_type, drives, size='all', pdperarray=None, pdcache=None,
+    def add(self, controller, array_type, drives, size=None, pdperarray=None, pdcache=None,
             dimmerswitch=None, io_mode='direct', write_policy='wb', read_policy='ra',
             cachevd=False, stripe_size=None, spares=None, cached_bad_bbu=False, after_vd=None):
-        """ Create a virtual drive
+        """ Add a virtual drive
 
         :param controller: Controller ID
         :param array_type:  r[0|1|5|6|10|50|60]
         :param drives: Drives specified with as EncID:drive,...
-        :param size: Size of a drive in MB or the string 'max'
+        :param size: Size of a drive in MB or None for maximum
         :param pdperarray: Specifies the number of physical drives per array. The default
 value is automatically chosen.(0 to 16)
         :param pdcache: Enables or disables PD cache. (on|off|default)
@@ -104,13 +144,13 @@ value is automatically chosen.(0 to 16)
         :return: AttributeString of command output
         """
 
-        command = '/c{controller} add vd type={array_type} size={size} drives={drives}  ' \
+        command = '/c{controller} add vd type={array_type}{size}drives={drives}  ' \
                   '{write_policy} {read_policy} {io_mode} {stripe_size}{spares}' \
                   '{cache_bad_bbu}{after_vd}{pdperarray}'.format(
                     **{'controller': controller,
                        'array_type': array_type,
                        'drives': drives,
-                       'size': size,
+                       'size': size and ' size={} '.format(size) or ' ',
                        'write_policy': write_policy,
                        'read_policy': read_policy,
                        'io_mode': io_mode,
@@ -124,8 +164,6 @@ value is automatically chosen.(0 to 16)
                        'after_vd': after_vd and 'aftervd={} '.format(after_vd) or ''
                        })
 
-        # command always returns zero on 'syntax' errors, so do some light parsing to see if command succeeded
-
         for level in self.span_arrays:
             if str(level) in array_type:
                 if not pdperarray:
@@ -136,9 +174,32 @@ value is automatically chosen.(0 to 16)
 
         lines = [l.strip() for l in out.splitlines() if l.strip()]
 
+        # command always returns zero on 'syntax' errors, so do some light
+        # parsing to see if command succeeded
         for idx in range(len(lines)):
             if lines[idx].find('help -') == 0:
                 error_output = '\n'.join(lines[:idx])
                 raise StorcliException('Error creating ld, response:\n\n{}'.format(error_output))
 
         return out
+
+    def add_hotspare(self, controller, enclosure, slot, disk_groups=None):
+        """
+        Set drive as a hot spare drive for the controller
+        :param controller: The controller
+        :param enclosure:
+        :param slot:
+        :param disk_groups:
+        :return:
+        """
+        if disk_groups:
+            dgs = ','.join(str(d) for d in disk_groups)
+        else:
+            dgs = None
+
+        self.run('/c{}/e{}/s{} add hotsparedrive{}'.format(
+            controller,
+            enclosure,
+            slot,
+            dgs and ' DGs={}'.format(dgs) or ''
+        ))

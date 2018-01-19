@@ -46,7 +46,7 @@ class DummyImplementation(RAIDActions):
     def clear_configuration(self, adapter):
         return True
 
-    def add_spares(self, adapter, array, drives):
+    def add_spares(self, adapter, drives, arrays=None):
         return True
 
     @staticmethod
@@ -135,7 +135,8 @@ class MercuryRAIDAbstractionAPITest(MercuryAgentUnitTest):
         self.assertRaises(NotImplementedError, self.abstract.create, *(0, 0))
         self.assertRaises(NotImplementedError, self.abstract.delete_logical_drive, *(0, 0, 0))
         self.assertRaises(NotImplementedError, self.abstract.clear_configuration, *(0, ))
-        self.assertRaises(NotImplementedError, self.abstract.add_spares, *(0, 0, 0))
+        self.assertRaises(NotImplementedError, self.abstract.add_spares,
+                          *(0, 0, None))
         self.abstract.sort_drives([0, 1, 2, 3])
 
     def test_get_drives(self):
