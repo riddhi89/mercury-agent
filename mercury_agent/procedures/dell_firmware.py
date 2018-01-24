@@ -241,7 +241,7 @@ def dell_apply_bios_settings(url=None):
             dependency_callback=is_dell, timeout=3600)
 def dell_update_firmware(url, dry_run=False):
     """
-     Apply HP firmware updates
+     Apply Dell firmware updates
      :param url: Full URL to the package containing firmware files
      :param dry_run: If firmware updates should be applied when found
     """

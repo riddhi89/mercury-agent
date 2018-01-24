@@ -1,3 +1,6 @@
+from mercury_agent.inspector import inspect
+
+
 RAID_CONTROLLER_CLASS_ID = "0104"
 SMART_ARRAY_DEVICE_ID_9 = "3239"  # Smart Array Gen9 Controllers
 
@@ -10,15 +13,18 @@ def is_platform(dmi_info, platform):
     return get_vendor(dmi_info) == platform
 
 
-def is_dell(dmi_info):
+def is_dell():
+    dmi_info = inspect.global_device_info.get('dmi')
     return is_platform(dmi_info, 'Dell Inc.')
 
 
-def is_hp(dmi_info):
+def is_hp():
+    dmi_info = inspect.global_device_info.get('dmi')
     return is_platform(dmi_info, 'HP')
 
 
-def is_quanta(dmi_info):
+def is_quanta():
+    dmi_info = inspect.global_device_info.get('dmi')
     return is_platform(dmi_info, 'Quanta')
 
 
