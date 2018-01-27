@@ -1,7 +1,7 @@
 import logging
 
 from mercury.common.exceptions import MercuryGeneralException
-from mercury.common.transport import SimpleRouterReqClient
+from mercury.common.clients.router_req_client import RouterReqClient
 
 LOG = logging.getLogger('')
 
@@ -13,7 +13,9 @@ class MercuryLogHandler(logging.Handler):
         self.service_url = service_url
         self.__mercury_id = mercury_id
 
-        self.client = SimpleRouterReqClient(self.service_url)
+        self.client = RouterReqClient(self.service_url, linger=0,
+                                      response_timeout=5)
+        self.service_name = 'Logging Service'
 
     def emit(self, record):
         if not self.__mercury_id:
@@ -23,8 +25,8 @@ class MercuryLogHandler(logging.Handler):
         data.update({'mercury_id': self.__mercury_id})
 
         response = self.client.transceiver(data)
-        if not response:
-            raise MercuryGeneralException('Did not receive response from server')
+        if response.get('error'):
+            raise MercuryGeneralException('Problem talking to logging service')
 
     def set_mercury_id(self, mercury_id):
         self.__mercury_id = mercury_id
