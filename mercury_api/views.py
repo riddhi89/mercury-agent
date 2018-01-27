@@ -35,8 +35,14 @@ class BaseMethodView(MethodView):
         super(BaseMethodView, self).__init__()
         inventory_url = api_configuration.api.inventory.inventory_router
         rpc_url = api_configuration.api.rpc.rpc_router
-        self.inventory_client = InventoryClient(inventory_url)
-        self.rpc_client = RPCFrontEndClient(rpc_url)
+        self.inventory_client = InventoryClient(inventory_url,
+                                                linger=0,
+                                                response_timeout=5,
+                                                raise_on_timeout=True)
+        self.rpc_client = RPCFrontEndClient(rpc_url,
+                                            linger=0,
+                                            response_timeout=5,
+                                            raise_on_timeout=True)
 
     @staticmethod
     def get_projection_from_qsa():
