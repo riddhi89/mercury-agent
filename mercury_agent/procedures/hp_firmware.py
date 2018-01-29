@@ -22,12 +22,18 @@ import lxml
 import requests
 
 from mercury_agent.capabilities import capability
+from mercury_agent.inspector.inspect import global_device_info
 from mercury.common.exceptions import HPFirmwareException
 from mercury.common.helpers import cli
 from mercury_agent.hardware.platform_detection import is_hp
 
 log = logging.getLogger(__name__)
 firmware_path = '/tmp/hp/firmware'
+
+
+def vendor_is_hp():
+    dmi_info = global_device_info.get('dmi')
+    return is_hp(dmi_info)
 
 
 def _extract(tarball_path, extract_path):
@@ -194,7 +200,7 @@ def parse_log_output_for_errors():
 @capability('hp_apply_bios_settings',
             description='Apply bios settings found in given file',
             kwarg_names=['url'], serial=True,
-            dependency_callback=is_hp, timeout=60)
+            dependency_callback=vendor_is_hp, timeout=60)
 def hp_apply_bios_settings(url=None):
     """
     Apply BIOS settings found at the given URL
@@ -226,7 +232,7 @@ def hp_apply_bios_settings(url=None):
 @capability('hp_update_firmware',
             description='Installs updates from provided packages',
             kwarg_names=['url', 'dry_run'], serial=True,
-            dependency_callback=is_hp, timeout=3600)
+            dependency_callback=vendor_is_hp, timeout=3600)
 def hp_update_firmware(url=None, dry_run=False):
     """
     Apply HP firmware updates
