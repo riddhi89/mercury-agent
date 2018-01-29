@@ -19,12 +19,18 @@ import os
 
 from mercury_agent.capabilities import capability
 from mercury_agent.hardware.platform_detection import is_dell
+from mercury_agent.inspector.inspect import global_device_info
 from mercury.common.exceptions import MercuryFirmwareException
 from mercury.common.helpers.util import extract_tar_archive, download_file, cli, xml_to_dict
 
 
 log = logging.getLogger(__name__)
 firmware_path = '/tmp/dell/firmware'
+
+
+def vendor_is_dell():
+    dmi_info = global_device_info.get('dmi')
+    return is_dell(dmi_info)
 
 
 def get_return_code_status(ret):
@@ -92,8 +98,8 @@ def get_return_code_status(ret):
 
 
 def run_cmd_and_parse_xml(cmd, xml_element):
-    result = cli.run(cmd)
-    return xml_to_dict(result.stdout, xml_element)
+    result = cli.run(cmd).stdout
+    return xml_to_dict(result, xml_element)
 
 
 def _split_and_get_fw_vers(xml_element_dict, xml_ele):
@@ -143,7 +149,7 @@ def generate_fw_report():
 
 def parse_fw_report(existing_firmware):
     component_list = []
-    for component_name, installed_versions in existing_firmware.iteritems():
+    for component_name, installed_versions in existing_firmware.items():
         for ver in installed_versions:
             component_list.append({
                 'name': component_name,
@@ -177,11 +183,11 @@ def find_available_updates():
 
 def _check_all():
         update_list = list()
-        check_args = ['-q', '-c']
+        check_args = ' -q -c'
 
         for installer in os.listdir(firmware_path):
             check_cmd = os.path.join(firmware_path, installer)
-            check_cmd = [check_cmd] + check_args
+            check_cmd = check_cmd + check_args
             result = cli.run(check_cmd)
             if result.returncode == 5:
                 log.info('{0} is not applicable'.format(installer))
@@ -204,7 +210,7 @@ def install_updates():
     errors = []
     for installer in update_list:
         update_cmd = os.path.join(firmware_path, installer)
-        update_cmd = [update_cmd] + ['-q']
+        update_cmd = update_cmd + ' -q'
         log.info('Running update: {0}'.format(installer))
         result = cli.run(update_cmd)
         status = get_return_code_status(int(result.returncode))
@@ -223,7 +229,7 @@ def install_updates():
 @capability('dell_apply_bios_settings',
             description='Apply bios settings found in given file',
             kwarg_names=['url'], serial=True,
-            dependency_callback=is_dell, timeout=600)
+            dependency_callback=vendor_is_dell, timeout=600)
 def dell_apply_bios_settings(url=None):
     """
     Apply BIOS settings found at the given URL
@@ -238,10 +244,10 @@ def dell_apply_bios_settings(url=None):
 @capability('dell_update_firmware',
             description='Installs updates from provided packages',
             kwarg_names=['url', 'dry_run'], serial=True,
-            dependency_callback=is_dell, timeout=3600)
+            dependency_callback=vendor_is_dell, timeout=3600)
 def dell_update_firmware(url, dry_run=False):
     """
-     Apply Dell firmware updates
+     Apply HP firmware updates
      :param url: Full URL to the package containing firmware files
      :param dry_run: If firmware updates should be applied when found
     """
