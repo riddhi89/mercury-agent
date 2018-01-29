@@ -116,8 +116,12 @@ class TaskRunner(object):
             'time_completed': self.time_completed,
             'action': 'Completed'
         })
-        log.debug('Dispatch successful : %s' % response,
-                  extra={'task_id': self.task_id, 'job_id': self.job_id})
+        if response.get('error'):
+            log.error('Error dispatching message. [timeout]',
+                      extra={'task_id': self.task_id, 'job_id': self.job_id})
+        else:
+            log.info('Dispatch successful : %s' % response,
+                     extra={'task_id': self.task_id, 'job_id': self.job_id})
 
     def run(self):
         log.info('Starting task: %s [%s]' % (self.entry.__name__, self.task_id),

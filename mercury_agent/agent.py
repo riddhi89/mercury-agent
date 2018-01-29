@@ -15,6 +15,7 @@
 
 import argparse
 import logging
+import time
 
 from mercury.common.clients.rpc.backend import BackEndClient
 from mercury.common.exceptions import MercuryCritical, MercuryGeneralException
@@ -36,6 +37,9 @@ from mercury_agent.inspector.inspectors.async_inspectors.lldp import LLDPInspect
 log = logging.getLogger(__name__)
 
 
+RETRY_SECONDS = 15
+
+
 class Agent(object):
     def __init__(self, configuration, logger):
         """
@@ -54,7 +58,10 @@ class Agent(object):
         if not self.rpc_backend_url:
             raise MercuryCritical('Missing rpc backend in local configuration')
 
-        self.backend = BackEndClient(self.rpc_backend_url)
+        self.backend = BackEndClient(self.rpc_backend_url,
+                                     linger=0,
+                                     response_timeout=10,
+                                     rcv_retry=3)
 
     def run(self, dhcp_ip_method='simple'):
         # TODO: Add other mechanisms for enumerating the devices public ip
@@ -82,7 +89,21 @@ class Agent(object):
         # TODO: enumerate ipv6 addresses
         local_ipv6 = None
 
-        register(self.backend, device_info, local_ip, local_ipv6, runtime_capabilities)
+        while True:
+            result = register(
+                self.backend,
+                device_info,
+                local_ip,
+                local_ipv6,
+                runtime_capabilities)
+
+            if result.get('error'):
+                log.info('Registration was not successful, retrying...')
+                time.sleep(RETRY_SECONDS)
+                continue
+
+            log.info('Device has been registered successfully')
+            break
 
         # LogHandler
 
