@@ -54,14 +54,8 @@ class ActiveComputerView(BaseMethodView):
 
             if not projection:
                 projection = {'active': 1, 'mercury_id': 1}
-            data = self.inventory_client.get_one(
-                {
-                    'mercury_id': mercury_id,
-                    'active': {
-                        '$ne': None
-                    }
-                },
-                projection=projection)
+            data = self.inventory_client.get_one(mercury_id,
+                                                 projection=projection)
             if not data:
                 message = 'mercury_id {} does not exist in inventory'
                 raise HTTPError(message.format(mercury_id), status_code=404)

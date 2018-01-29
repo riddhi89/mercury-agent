@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name='mercury-api',
-    version='0.0.2',
+    version='0.1.3',
     packages=['mercury_api'],
     url='https://www.rackspace.com',
     license='',

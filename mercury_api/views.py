@@ -19,10 +19,9 @@ import logging
 from flask import request
 from flask.views import MethodView
 
-from mercury.common.clients.inventory import InventoryClient
-from mercury.common.clients.rpc.frontend import RPCFrontEndClient
-
 from mercury_api.configuration import get_api_configuration
+from mercury_api.mercury_clients import SimpleInventoryClient, \
+    SimpleRPCFrontEndClient
 
 log = logging.getLogger(__name__)
 api_configuration = get_api_configuration()
@@ -35,8 +34,14 @@ class BaseMethodView(MethodView):
         super(BaseMethodView, self).__init__()
         inventory_url = api_configuration.api.inventory.inventory_router
         rpc_url = api_configuration.api.rpc.rpc_router
-        self.inventory_client = InventoryClient(inventory_url)
-        self.rpc_client = RPCFrontEndClient(rpc_url)
+        self.inventory_client = SimpleInventoryClient(inventory_url,
+                                                      linger=0,
+                                                      response_timeout=5,
+                                                      raise_on_timeout=True)
+        self.rpc_client = SimpleRPCFrontEndClient(rpc_url,
+                                                  linger=0,
+                                                  response_timeout=5,
+                                                  raise_on_timeout=True)
 
     @staticmethod
     def get_projection_from_qsa():
