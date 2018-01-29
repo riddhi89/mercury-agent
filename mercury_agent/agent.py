@@ -15,6 +15,7 @@
 
 import argparse
 import logging
+import time
 
 from mercury.common.clients.rpc.backend import BackEndClient
 from mercury.common.exceptions import MercuryCritical, MercuryGeneralException
@@ -34,6 +35,9 @@ from mercury_agent.inspector.inspectors.async_inspectors.lldp import LLDPInspect
 
 
 log = logging.getLogger(__name__)
+
+
+RETRY_SECONDS = 15
 
 
 class Agent(object):
@@ -95,6 +99,7 @@ class Agent(object):
 
             if result.get('error'):
                 log.info('Registration was not successful, retrying...')
+                time.sleep(RETRY_SECONDS)
                 continue
 
             log.info('Device has been registered successfully')
