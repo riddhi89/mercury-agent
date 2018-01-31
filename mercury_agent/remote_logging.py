@@ -28,5 +28,11 @@ class MercuryLogHandler(logging.Handler):
         if response.get('error'):
             raise MercuryGeneralException('Problem talking to logging service')
 
+        # Close the socket
+        # This is not efficient, I need to find a way to disconnect the socket
+        # after it has gone idle.
+
+        self.client.close()
+
     def set_mercury_id(self, mercury_id):
         self.__mercury_id = mercury_id
