@@ -18,7 +18,7 @@
 
 import logging
 
-from mercury_agent.configuration import agent_configuration
+from mercury_agent.configuration import get_configuration
 
 from mercury_agent.hardware import platform_detection
 from mercury_agent.hardware.drivers import driver, PCIDriverBase
@@ -53,7 +53,7 @@ class MegaRAIDActions(RAIDActions):
         As such, vendor_info may need a little more cleanup in comparison to SmartArray
         """
         super(MegaRAIDActions, self).__init__()
-        self.storcli = Storcli(binary_path=agent_configuration.get(
+        self.storcli = Storcli(binary_path=get_configuration().get(
             'hardware', {}).get(
             'raid', {}).get(
             'storcli_path') or 'storcli')

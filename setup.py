@@ -31,7 +31,9 @@ setup(
         'python-hpssa',
         'lxml',
         'press',
-        'six'
+        'six',
+        'msgpack-python',
+        'pyzmq'
     ],
     entry_points="""
     [console_scripts]

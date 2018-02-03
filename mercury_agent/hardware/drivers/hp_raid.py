@@ -15,7 +15,7 @@
 
 from hpssa.hpssa import HPSSA
 
-from mercury_agent.configuration import agent_configuration
+from mercury_agent.configuration import get_configuration
 
 from mercury_agent.hardware import platform_detection
 from mercury_agent.hardware.drivers import driver, PCIDriverBase
@@ -38,7 +38,7 @@ class SmartArrayActions(RAIDActions):
 
     def __init__(self):
         super(SmartArrayActions, self).__init__()
-        self.hpssa = HPSSA(hpssa_path=agent_configuration.get(
+        self.hpssa = HPSSA(hpssa_path=get_configuration().get(
             'hardware', {}).get(
             'raid', {}).get(
             'hpssacli_path') or 'hpssacli')
