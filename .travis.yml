@@ -6,4 +6,4 @@ install:
   - pip install tox
   - pip install tox-travis
 
-script: cd src/ && tox
+script: tox
