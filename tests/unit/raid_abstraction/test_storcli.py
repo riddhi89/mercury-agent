@@ -1,14 +1,14 @@
 import mock
 import os
 
-from mercury_agent.common.helpers.cli import CLIResult
+from mercury.common.helpers.cli import CLIResult
 from mercury_agent.hardware.raid.interfaces.megaraid import storcli
 
 from ..base import MercuryAgentUnitTest
 
 
 class StorcliTest(MercuryAgentUnitTest):
-    @mock.patch('mercury.hardware.raid.interfaces.megaraid.storcli.cli')
+    @mock.patch('mercury_agent.hardware.raid.interfaces.megaraid.storcli.cli')
     def test_run(self, mock_cli):
         mock_cli.run.return_value = CLIResult('', '', 0)
         mock_cli.find_in_path.return_value = '/sbin/storcli64'
@@ -19,7 +19,7 @@ class StorcliTest(MercuryAgentUnitTest):
 
         self.assertRaises(storcli.StorcliException, s.run, *('', ))
 
-    @mock.patch('mercury.hardware.raid.interfaces.megaraid.storcli.cli')
+    @mock.patch('mercury_agent.hardware.raid.interfaces.megaraid.storcli.cli')
     def test_run_json(self, mock_cli):
         with open(os.path.join(os.path.dirname(__file__),
                                '../resources/storcli.json')) as fp:
@@ -34,7 +34,7 @@ class StorcliTest(MercuryAgentUnitTest):
 
         self.assertRaises(storcli.StorcliException, s.run_json, *('', ))
 
-    @mock.patch('mercury.hardware.raid.interfaces.megaraid.storcli.cli')
+    @mock.patch('mercury_agent.hardware.raid.interfaces.megaraid.storcli.cli')
     def test_controllers(self, mock_cli):
         with open(os.path.join(os.path.dirname(__file__),
                                '../resources/storcli.json')) as fp:
@@ -52,14 +52,14 @@ class StorcliTest(MercuryAgentUnitTest):
 
         self.assertRaises(storcli.StorcliException, _wrapper)
 
-    @mock.patch('mercury.hardware.raid.interfaces.megaraid.storcli.cli')
+    @mock.patch('mercury_agent.hardware.raid.interfaces.megaraid.storcli.cli')
     def test_delete(self, mock_cli):
         mock_cli.run.return_value = CLIResult('', '', 0)
         mock_cli.find_in_path.return_value = '/sbin/storcli64'
         s = storcli.Storcli()
         assert s.delete(0) == ''
 
-    @mock.patch('mercury.hardware.raid.interfaces.megaraid.storcli.cli')
+    @mock.patch('mercury_agent.hardware.raid.interfaces.megaraid.storcli.cli')
     def test_add(self, mock_cli):
         mock_cli.run.return_value = CLIResult('', '', 0)
         mock_cli.find_in_path.return_value = '/sbin/storcli64'

@@ -12,7 +12,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-"""Module to unit test mercury.inspector.hwlib.network_interfaces"""
+"""Module to unit test mercury_agent.inspector.hwlib.network_interfaces"""
 
 import mock
 import pytest
@@ -49,7 +49,7 @@ def fake_ifaddresses_func(interface):
 
 
 class MercuryMiscNetworkInterfacesUnitTests(MercuryAgentUnitTest):
-    """Unit tests for mercury.inspector.hwlib.network_interfaces"""
+    """Unit tests for mercury_agent.inspector.hwlib.network_interfaces"""
     def setUp(self):
         super(MercuryMiscNetworkInterfacesUnitTests, self).setUp()
 
