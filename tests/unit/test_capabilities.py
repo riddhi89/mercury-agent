@@ -12,7 +12,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-"""Unit tests for mercury.agent.capabilities"""
+"""Unit tests for mercury_agent.capabilities"""
 
 import mock
 
@@ -35,7 +35,7 @@ def test_add_capability():
     del capabilities.runtime_capabilities['c_name']
 
 
-@mock.patch('mercury.agent.capabilities.add_capability')
+@mock.patch('mercury_agent.capabilities.add_capability')
 def test_capability(mock_add_capability):
     """Test @capability() decorator"""
     @capabilities.capability('c_name', 'Capability Description', num_args=1)
