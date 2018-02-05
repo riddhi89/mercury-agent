@@ -12,7 +12,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-"""Module to unit test mercury.inspector.hwlib.lspci"""
+"""Module to unit test mercury_agent.inspector.hwlib.lspci"""
 
 import mock
 import pytest
@@ -219,8 +219,8 @@ def get_fake_pcidevice_required_args(slot='00:00.0', class_id='beef',
 
 
 class MercuryMiscLspciUnitTests(MercuryAgentUnitTest):
-    """Unit tests for mercury.inspector.hwlib.lspci"""
-    @mock.patch('mercury.inspector.hwlib.lspci.subprocess.Popen')
+    """Unit tests for mercury_agent.inspector.hwlib.lspci"""
+    @mock.patch('mercury_agent.inspector.hwlib.lspci.subprocess.Popen')
     def setUp(self, popen_mock):
         """Setup a PCIBus object for each test."""
         popen_mock.return_value.communicate.return_value = (
@@ -235,7 +235,7 @@ class MercuryMiscLspciUnitTests(MercuryAgentUnitTest):
         for device in self.pci_bus:
             assert device in EXPECTED_PARSED_EXAMPLE_LSPCI_OUTPUT
 
-    @mock.patch('mercury.inspector.hwlib.lspci.subprocess.Popen')
+    @mock.patch('mercury_agent.inspector.hwlib.lspci.subprocess.Popen')
     def test_lscpi_run_raises(self, popen_mock):
         """Test what happens when lspci returns non-zero error."""
         popen_mock.return_value.communicate.return_value = (

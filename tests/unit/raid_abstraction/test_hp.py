@@ -63,8 +63,9 @@ class MercurySmartArrayActionsTest(MercuryAgentUnitTest):
 
         self.dummy_actions = DummySmartArrayActions()
 
-    @mock.patch('mercury.hardware.drivers.hp_raid.HPSSA')
-    def test_real_init(self, mock_hpssa):
+    @mock.patch('mercury_agent.hardware.drivers.hp_raid.HPSSA')
+    @mock.patch('mercury_agent.hardware.drivers.hp_raid.get_configuration')
+    def test_real_init(self, mock_hpssa, mock_get_configuration):
         SmartArrayActions()
 
     def test_missing_array(self):

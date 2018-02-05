@@ -12,13 +12,12 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-from __future__ import absolute_import
 
 import logging
 import time
 
 from mercury_agent.capabilities import capability
-from mercury_agent.configuration import agent_configuration, remote_configuration
+from mercury_agent.configuration import get_configuration
 from mercury.common.clients.rpc.backend import BackEndClient
 from mercury.common.exceptions import fancy_traceback_short, parse_exception
 from press.configuration.util import set_environment
@@ -31,7 +30,7 @@ log = logging.getLogger(__name__)
 
 # noinspection PyBroadException
 def entry(press_configuration):
-    set_environment(agent_configuration.get('press_environment', {}))
+    set_environment(get_configuration().get('press_environment', {}))
 
     log.info('Initializing plugins')
     init_plugins(press_configuration)
@@ -77,7 +76,7 @@ def add_mercury_plugin_data(press_configuration, task_id):
 
     press_configuration['mercury'] = {
         'task_id': task_id,
-        'backend_zurl': remote_configuration['rpc_service']
+        'backend_zurl': get_configuration().agent.remote.backend_url
     }
 
 
@@ -89,7 +88,7 @@ def press_native(**kwargs):
 
     add_mercury_plugin_data(press_configuration, task_id)
 
-    backend_client = BackEndClient(remote_configuration['rpc_service'])
+    backend_client = BackEndClient(get_configuration().agent.remote.backend_url)
     log.info('Starting press')
     start = time.time()
     backend_client.update_task({'task_id': task_id, 'action': 'Press: Launching'})

@@ -14,7 +14,7 @@ class MercuryLogHandler(logging.Handler):
         self.__mercury_id = mercury_id
 
         self.client = RouterReqClient(self.service_url, linger=0,
-                                      response_timeout=5)
+                                      response_timeout=2)
         self.service_name = 'Logging Service'
 
     def emit(self, record):
@@ -24,13 +24,17 @@ class MercuryLogHandler(logging.Handler):
         data = record.__dict__
         data.update({'mercury_id': self.__mercury_id})
 
-        err_msg = 'Problem talking to logging service'
+        err_msg = 'There is a problem with the remote logging service!'
+        # noinspection PyBroadException
         try:
             response = self.client.transceiver(data)
         except Exception:
-            raise MercuryGeneralException(err_msg)
-        if response.get('error'):
-            raise MercuryGeneralException(err_msg)
+            logging.error(err_msg)
+        else:
+            if response.get('error'):
+                logging.error(err_msg)
+        finally:
+            self.client.close()
 
     def set_mercury_id(self, mercury_id):
         self.__mercury_id = mercury_id

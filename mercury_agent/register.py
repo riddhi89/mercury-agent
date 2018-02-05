@@ -16,8 +16,8 @@
 import logging
 import time
 
-from mercury_agent.configuration import agent_configuration
-from mercury.common.exceptions import MercuryCritical
+from mercury_agent.configuration import get_configuration
+from mercury.common.exceptions import MercuryCritical, MercuryConfigurationError
 from mercury_agent.inspector.inspectors.interfaces import get_interface_by_name
 from mercury_agent.inspector.inspectors.routes import find_default_route
 
@@ -42,6 +42,10 @@ def get_dhcp_ip(device_info, method='simple'):
                     mercury_dhcp_info.sh, containing DHCP options recieved from the server (including the dhcp_ip).
     :return: ip address
     """
+    override_ip = get_configuration()['agent']['local_ip']
+    if override_ip:
+        return override_ip
+
     if method == 'simple':
         routes = device_info['routes']
         interfaces = device_info['interfaces']
@@ -76,6 +80,27 @@ def _serialize_capabilities(capabilities):
     return _d
 
 
+def _get_port_from_config(key, default):
+    """ Hacky way to avoid having another configuration option
+
+    :param key: service_bind_address or pong_bind_address
+    :param default: The default port 9003 or 9004 respectively
+    :return: The port
+    """
+
+    zurl = get_configuration().agent.get(key)
+    if not zurl:
+        return default
+
+    # obviously, things could go wrong here
+    try:
+        return int(zurl.split(':')[2].strip())
+    except (ValueError, KeyError, IndexError):
+        raise MercuryConfigurationError(f'{key} seems to be invalid in config'
+                                        f'zURL format is required:'
+                                        f'proto://address:port')
+
+
 def register(rpc_backend_client, device_info, local_ip, local_ip6, capabilities):
     # There is still some confusion regarding how best to determine what ip
     # to publish. Current wisdom suggest that we find the default gateway,
@@ -101,8 +126,8 @@ def register(rpc_backend_client, device_info, local_ip, local_ip6, capabilities)
     agent_info = {
         'rpc_address': local_ip,
         'rpc_address6': local_ip6,
-        'rpc_port': agent_configuration.get('rpc_port', 9003),
-        'ping_port': agent_configuration.get('ping_port', 9004),
+        'rpc_port': _get_port_from_config('service_bind_address', 9003),
+        'ping_port': _get_port_from_config('pong_bind_address', 9004),
         'localtime': time.time(),
         'capabilities': _serialize_capabilities(capabilities)
     }
