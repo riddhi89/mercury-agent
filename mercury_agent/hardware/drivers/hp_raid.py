@@ -39,6 +39,7 @@ class SmartArrayActions(RAIDActions):
     def __init__(self):
         super(SmartArrayActions, self).__init__()
         self.hpssa = HPSSA(hpssa_path=get_configuration().get(
+            'agent', {}).get(
             'hardware', {}).get(
             'raid', {}).get(
             'hpssacli_path') or 'hpssacli')

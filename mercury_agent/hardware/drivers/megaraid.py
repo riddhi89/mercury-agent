@@ -54,6 +54,7 @@ class MegaRAIDActions(RAIDActions):
         """
         super(MegaRAIDActions, self).__init__()
         self.storcli = Storcli(binary_path=get_configuration().get(
+            'agent', {}).get(
             'hardware', {}).get(
             'raid', {}).get(
             'storcli_path') or 'storcli')
