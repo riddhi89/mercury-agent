@@ -354,6 +354,12 @@ class MegaRAIDActions(RAIDActions):
 
         target_drives = []
         for drive in drives:
+            if drive['extra']['vendor_state'] != 'UGood':
+                raise RAIDAbstractionException(
+                    'Drive index: {}, address:{} is in a failed state, cannot '
+                    'create array'.format(
+                        drive['index'], drive['extra']['address']))
+
             target_drives.append(drive['extra']['address'])
 
         return self.storcli.add(
@@ -378,7 +384,7 @@ class MegaRAIDActions(RAIDActions):
 
         try:
             # ensure that the index exists
-            assert len(arrays[array]['logical_drive']) >= logical_drive + 1
+            assert len(arrays[array]['logical_drives']) >= logical_drive + 1
         except (IndexError, AssertionError):
             raise RAIDAbstractionException(
                 'Logical Drive does not exist at {}:{}:{}'.format(
@@ -413,8 +419,13 @@ class MegaRAIDActions(RAIDActions):
         dgs = []
 
         if arrays:
-            for a in arrays:
-                dgs.append(a['extra']['disk_group'])
+            for ary_index in arrays:
+                try:
+                    array = adapter_info['configuration']['arrays'][ary_index]
+                except IndexError:
+                    raise RAIDAbstractionException(
+                        'Array {} does not exist'.format(ary_index))
+                dgs.append(array['extra']['disk_group'])
 
         for drive in target_drives:
             enclosure, slot = (
