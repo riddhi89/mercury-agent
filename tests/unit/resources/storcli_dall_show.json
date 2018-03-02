@@ -1,0 +1,243 @@
+{
+  "Controllers": [
+    {
+      "Command Status": {
+        "Controller": 0,
+        "Status": "Success",
+        "Description": "Show Diskgroup Succeeded"
+      },
+      "Response Data": {
+        "Response Data": {
+          "TOPOLOGY": [
+            {
+              "DG": 0,
+              "Arr": "-",
+              "Row": "-",
+              "EID:Slot": "-",
+              "DID": "-",
+              "Type": "RAID0",
+              "State": "Optl",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "N"
+            },
+            {
+              "DG": 0,
+              "Arr": 0,
+              "Row": "-",
+              "EID:Slot": "-",
+              "DID": "-",
+              "Type": "RAID0",
+              "State": "Optl",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "N"
+            },
+            {
+              "DG": 0,
+              "Arr": 0,
+              "Row": 0,
+              "EID:Slot": "32:0",
+              "DID": 0,
+              "Type": "DRIVE",
+              "State": "Onln",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "-"
+            },
+            {
+              "DG": 1,
+              "Arr": "-",
+              "Row": "-",
+              "EID:Slot": "-",
+              "DID": "-",
+              "Type": "RAID1",
+              "State": "Optl",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "Y"
+            },
+            {
+              "DG": 1,
+              "Arr": 0,
+              "Row": "-",
+              "EID:Slot": "-",
+              "DID": "-",
+              "Type": "RAID1",
+              "State": "Optl",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "Y"
+            },
+            {
+              "DG": 1,
+              "Arr": 0,
+              "Row": 0,
+              "EID:Slot": "32:1",
+              "DID": 1,
+              "Type": "DRIVE",
+              "State": "Onln",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "-"
+            },
+            {
+              "DG": 1,
+              "Arr": 0,
+              "Row": 1,
+              "EID:Slot": "32:2",
+              "DID": 2,
+              "Type": "DRIVE",
+              "State": "Onln",
+              "BT": "N",
+              "Size": "744.625 GB",
+              "PDC": "dflt",
+              "PI": "N",
+              "SED": "N",
+              "DS3": "dflt",
+              "FSpace": "-"
+            },
+            {
+              "DG": 1,
+              "Arr": "-",
+              "Row": "-",
+              "EID:Slot": "32:3",
+              "DID": 3,
+              "Type": "DRIVE",
+              "State": "DHS",
+              "BT": "-",
+              "Size": "744.625 GB",
+              "PDC": "-",
+              "PI": "-",
+              "SED": "-",
+              "DS3": "-",
+              "FSpace": "-"
+            }
+          ],
+          "VD LIST": [
+            {
+              "DG/VD": "0/0",
+              "TYPE": "RAID0",
+              "State": "Optl",
+              "Access": "RW",
+              "Consist": "Yes",
+              "Cache": "RWBD",
+              "Cac": "-",
+              "sCC": "OFF",
+              "Size": "744.625 GB",
+              "Name": "Virtual Disk0"
+            },
+            {
+              "DG/VD": "1/1",
+              "TYPE": "RAID1",
+              "State": "Optl",
+              "Access": "RW",
+              "Consist": "Yes",
+              "Cache": "RWBD",
+              "Cac": "-",
+              "sCC": "OFF",
+              "Size": "100.0 MB",
+              "Name": "Virtual Disk1"
+            }
+          ],
+          "Total VD Count": 2,
+          "DG Drive LIST": [
+            {
+              "EID:Slt": "32:0",
+              "DID": 0,
+              "State": "Onln",
+              "DG": 0,
+              "Size": "744.625 GB",
+              "Intf": "SATA",
+              "Med": "SSD",
+              "SED": "N",
+              "PI": "N",
+              "SeSz": "512B",
+              "Model": "INTEL SSDSC2BA800G3T",
+              "Sp": "U"
+            },
+            {
+              "EID:Slt": "32:1",
+              "DID": 1,
+              "State": "Onln",
+              "DG": 1,
+              "Size": "744.625 GB",
+              "Intf": "SATA",
+              "Med": "SSD",
+              "SED": "N",
+              "PI": "N",
+              "SeSz": "512B",
+              "Model": "INTEL SSDSC2BA800G3T",
+              "Sp": "U"
+            },
+            {
+              "EID:Slt": "32:2",
+              "DID": 2,
+              "State": "Onln",
+              "DG": 1,
+              "Size": "744.625 GB",
+              "Intf": "SATA",
+              "Med": "SSD",
+              "SED": "N",
+              "PI": "N",
+              "SeSz": "512B",
+              "Model": "INTEL SSDSC2BA800G3T",
+              "Sp": "U"
+            }
+          ],
+          "Total Drive Count": 3,
+          "UN-CONFIGURED DRIVE LIST": [
+            {
+              "EID:Slt": "32:3",
+              "DID": 3,
+              "State": "DHS",
+              "DG": "1",
+              "Size": "744.625 GB",
+              "Intf": "SATA",
+              "Med": "SSD",
+              "SED": "N",
+              "PI": "N",
+              "SeSz": "512B",
+              "Model": "INTEL SSDSC2BA800G3T",
+              "Sp": "U"
+            }
+          ],
+          "Unconfigured Drive Count": 1,
+          "FREE SPACE DETAILS": [
+            {
+              "ID": 1,
+              "DG": 1,
+              "AftrVD": 1,
+              "Size": "744.527 GB"
+            }
+          ],
+          "Total Free Slots": 1
+        }
+      }
+    }
+  ]
+}

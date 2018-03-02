@@ -37,6 +37,17 @@ class RAIDActions(object):
         for idx, drive in enumerate(drives):
             drive.update({'index': idx})
 
+    def _add_totals(self, adapter_info):
+        """
+        Adds drive and size totals to adapter_info
+        :param adapter_info:
+        :return:
+        """
+        all_drives = self.get_all_drives_from_adapter(adapter_info)
+        adapter_info['total_size'] = sum(
+            [drive['size'] for drive in all_drives])
+        adapter_info['total_drives'] = len(all_drives)
+
     def get_adapter_info(self, adapter_index):
         """
         Returns adapter details in a standard format. The driver is responsible for finding
@@ -61,6 +72,7 @@ class RAIDActions(object):
         """
         adapter_info = self.transform_adapter_info(adapter_index)
         self._add_indexes(adapter_info['configuration'])
+        self._add_totals(adapter_info)
         return adapter_info
 
     def create(self, adapter_info, level, drives=None, size=None, array=None):
@@ -177,6 +189,9 @@ class RAIDActions(object):
         :return:
         """
 
+        # TODO: Add span support
+        # TODO: Add generic cache policy support
+
         if not (array is not None or drives is not None):
             raise RAIDAbstractionException('Either drive targets or an array must be specified')
 
@@ -212,18 +227,16 @@ class RAIDActions(object):
     def clear_configuration(self, adapter):
         raise NotImplementedError
 
-    def add_spares(self, adapter, array, drives):
+    def add_spares(self, adapter, drives, arrays=None):
         raise NotImplementedError
 
-    def get_all_drives(self, adapter_index):
+    def get_all_drives_from_adapter(self, adapter):
         """
         Get drives while preserving array membership
-        :param adapter_index: target adapter
+        :param adapter: target adapter
         :return: drives
         :return type: list
         """
-        adapter = self.get_adapter_info(adapter_index)
-
         drives = []
 
         arrays = adapter['configuration']['arrays']
@@ -233,11 +246,24 @@ class RAIDActions(object):
                 pd.update({'member_of': array_idx})
                 drives.append(pd)
 
-        drives += adapter['configuration']['spares'] + adapter['configuration']['unassigned']
+        drives += adapter['configuration']['spares'] \
+                  + adapter['configuration']['unassigned']
 
         self.sort_drives(drives)
 
         return drives
+
+    def get_all_drives(self, adapter_index):
+        """
+        Get drives while preserving array membership
+        :param adapter_index: target adapter index
+        :return: drives
+        :return type: list
+        """
+
+        return self.get_all_drives_from_adapter(
+            self.get_adapter_info(adapter_index))
+
 
     def get_unassigned(self, adapter_index):
         drives = self.get_all_drives(adapter_index)

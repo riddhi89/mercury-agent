@@ -169,7 +169,13 @@ class MercurySmartArrayActionsTest(MercuryAgentUnitTest):
         assert self.dummy_actions.clear_configuration(0)
 
     def test_add_spares(self):
-        assert self.dummy_actions.add_spares(0, 0, [10, 11])
+        assert self.dummy_actions.add_spares(0, [10, 11])
+        assert self.dummy_actions.add_spares(0, [10], [0])
 
     def test_get_bad_adapter_info(self):
         self.assertRaises(RAIDAbstractionException, self.dummy_actions.get_adapter_info, *(100, ))
+
+    def test_get_adapter_info(self):
+        adapter_info = self.dummy_actions.get_adapter_info(0)
+        self.assertEqual(adapter_info['total_drives'], 26)
+        self.assertEqual(adapter_info['total_size'], 7800000000000)
