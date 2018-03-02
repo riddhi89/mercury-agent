@@ -15,9 +15,10 @@
 
 import logging
 
+from mercury.common.exceptions import MercuryUserError
+
 from mercury_agent.capabilities import capability
 from mercury_agent.backend_client import get_backend_client
-from mercury.common.exceptions import MercuryUserError
 from mercury_agent.hardware.drivers.drivers import driver_class_cache
 from mercury_agent.inspector.inspect import global_device_info
 from mercury_agent.inspector.inspectors.raid import raid_inspector
@@ -161,3 +162,27 @@ def hpssa_clear_configurations_all_controllers():
     """
     hp_raid_driver = get_hp_raid_driver()
     return hp_raid_driver.handler.hpssa.clear_configuration()
+
+
+@capability('hpssa_add_spares',
+            description='Add spare drives to one, many, or all arrays',
+            serial=True,
+            dependency_callback=has_hp_raid_driver,
+            kwarg_names=['slot', 'selection'],
+            timeout=120)
+@update_on_change
+def hpssa_add_spares(slot, selection, array_letters=None):
+    """
+
+    :param slot: Adapter slot to target
+    :param selection: all, allunassigned, Port:Box:Bay,...  , 1I:1:1-1I:1:6
+    :param array_letters: None for a global hotspare, otherwise a list of
+        array letters that the spares should be dedicated or shared between
+    :return:
+    """
+    results = get_hp_raid_driver().handler.hpssa.add_spares(
+        slot, selection, array_letters)
+
+    return [{'stdout': result,
+             'stderr': result.stderr,
+             'returncode': result.returncode} for result in results]
