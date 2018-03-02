@@ -149,7 +149,7 @@ class MegaRAIDActions(RAIDActions):
                 'disk_group': disk_group,
                 'interface': pd['Intf'],
                 'self_encrypted_drive':
-                    pd['SED'] != 'N' and True or False,
+                    pd['SED'] != 'N',
                 'spun': pd['Sp'],
                 'sector_size': Size(pd['SeSz'].lower()).bytes,
                 'vendor_state': pd['State'],
@@ -216,7 +216,7 @@ class MegaRAIDActions(RAIDActions):
                                                        dg_info),
                 'extra': {
                     'disk_group': dg['DG'],
-                    'background_task': dg['BT'] is 'yes' and True or False,
+                    'background_task': dg['BT'] == 'yes',
                     'dimmer_switch': self.dash_is_none(dg['DS3'])
                 }
             })
