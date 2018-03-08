@@ -30,7 +30,7 @@ def validate_json(f):
         try:
             # If the application content type is not set then
             # request.json is None
-            if request.method == 'POST' and not request.json:
+            if not request.json:
                 raise HTTPError(
                     'JSON request or mimetype is missing', status_code=400)
         except ValueError:
@@ -48,8 +48,7 @@ def check_query(f):
     """
 
     def wrapper(*args, **kwargs):
-        if (request.method == 'POST'
-                and not isinstance(request.json.get('query'), dict)):
+        if not isinstance(request.json.get('query'), dict):
             raise HTTPError('JSON request is malformed', status_code=400)
         return f(*args, **kwargs)
 
