@@ -18,7 +18,10 @@ from flask import Flask, jsonify
 from mercury_api.configuration import get_api_configuration
 from mercury_api.exceptions import HTTPError
 from mercury_api.transaction_log import setup_logging
-from mercury_api.urls import api_urls
+from mercury_api.views.active import active_blueprint
+from mercury_api.views.inventory import inventory_blueprint
+from mercury_api.views.rpc import rpc_blueprint
+
 
 app = Flask(__name__)
 
@@ -54,9 +57,11 @@ def log_request(response):
     return response
 
 
-# Add url rules
-for url, view_func in api_urls:
-    app.add_url_rule(url, view_func=view_func, strict_slashes=False)
+# Register blueprints
+app.register_blueprint(active_blueprint, url_prefix='/api/active')
+app.register_blueprint(inventory_blueprint, url_prefix='/api/inventory')
+app.register_blueprint(rpc_blueprint, url_prefix='/api/rpc')
+
 
 if __name__ == '__main__':
     config = get_api_configuration()
