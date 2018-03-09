@@ -37,7 +37,8 @@ def vendor_is_hp():
 
 
 def _extract(tarball_path, extract_path):
-    os.makedirs(extract_path)
+    if not os.path.exists(extract_path):
+        os.makedirs(extract_path)
     log.info('Extracting {0}'.format(tarball_path))
     cmd = 'tar --strip-components=1 -xvf {0} -C {1}'.format(tarball_path,
                                                             extract_path)
@@ -103,10 +104,10 @@ def _hpsum_cmd(cmd):
 
 def generate_fw_report():
     result = _hpsum_cmd('/report')
-    if result.returncode:
+    if result.returncode not in [0, 3]:
         raise HPFirmwareException('Unable to generate firmware report')
 
-    xml_report = glob.glob(os.path.join(firmware_path, 'HPSum*'))
+    xml_report = glob.glob(os.path.join(firmware_path, 'HPSUM*.xml'))
     if not xml_report:
         raise HPFirmwareException('Unable to find generated firmware report')
 
