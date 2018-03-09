@@ -106,7 +106,7 @@ def generate_fw_report():
     if result.returncode:
         raise HPFirmwareException('Unable to generate firmware report')
 
-    xml_report = glob.glob(os.path.join(firmware_path, 'HPSum*'))
+    xml_report = glob.glob(os.path.join(firmware_path, 'HPSUM*'))
     if not xml_report:
         raise HPFirmwareException('Unable to find generated firmware report')
 
