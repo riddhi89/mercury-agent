@@ -13,8 +13,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from mercury_agent.procedures.press_native import *
+from mercury_agent.procedures.dell_firmware import *
+from mercury_agent.procedures.hp_raid import *
+from mercury_agent.procedures.hp_firmware import *
 from mercury_agent.procedures.inspector import *
 from mercury_agent.procedures.misc import *
-from mercury_agent.procedures.hp_raid import *
+from mercury_agent.procedures.press_native import *
 from mercury_agent.procedures.raid import *
