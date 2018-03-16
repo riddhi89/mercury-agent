@@ -365,7 +365,7 @@ class MegaRAIDActions(RAIDActions):
         return self.storcli.add(
             controller=self.get_controller_id(adapter_info),
             array_type=level,
-            drives=target_drives,
+            drives=','.join(target_drives),
             size=size_mb
         )
 
