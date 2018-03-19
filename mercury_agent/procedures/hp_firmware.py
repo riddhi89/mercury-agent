@@ -97,7 +97,7 @@ def firmware_updates_available(component_list):
 def _hpsum_cmd(cmd):
     # TODO: Figure out how to have cli.run() support timeouts
     # Agent probably already supports timeout for capabilities, verify!
-    hpsum_exec_path = os.path.join(firmware_path, 'hpsum')
+    hpsum_exec_path = os.path.join(firmware_path, 'smartupdate')
     command = '{0} /s {1}'.format(hpsum_exec_path, cmd)
     return cli.run(command)
 
@@ -107,7 +107,7 @@ def generate_fw_report():
     if result.returncode not in [0, 3]:
         raise HPFirmwareException('Unable to generate firmware report')
 
-    xml_report = glob.glob(os.path.join(firmware_path, 'HPSUM*.xml'))
+    xml_report = glob.glob(os.path.join(firmware_path, 'SUM*.xml'))
     if not xml_report:
         raise HPFirmwareException('Unable to find generated firmware report')
 
@@ -232,7 +232,7 @@ def hp_apply_bios_settings(url=None):
 
 @capability('hp_update_firmware',
             description='Installs updates from provided packages',
-            kwarg_names=['url', 'dry_run'], serial=True,
+            kwarg_names=['url'], serial=True,
             dependency_callback=vendor_is_hp, timeout=3600)
 def hp_update_firmware(url=None, dry_run=False):
     """
