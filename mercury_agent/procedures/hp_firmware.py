@@ -28,7 +28,9 @@ from mercury.common.helpers import cli
 from mercury_agent.hardware.platform_detection import is_hp
 
 log = logging.getLogger(__name__)
+
 firmware_path = '/tmp/hp/firmware'
+sum_log_path = '/var/log/sum/*.raw'
 
 
 def vendor_is_hp():
@@ -173,29 +175,34 @@ def install_updates(force_install):
     return _hpsum_cmd('/On_failed_dependency:Force')
 
 
-def parse_log_output_for_errors():
-    """
-    Sample huspm log output for fetching exit code:
-    ////////////////////////////////////////////////////////////////////////////////
-    //  Exit Code for Node localhost: 1
-    //  HP Smart Update Manager for Node localhost Finished Fri Jan 15 2016 15:39:09
-    ////////////////////////////////////////////////////////////////////////////////
-    """
-    hpsum_log_path = '/var/hp/log/localhost/hpsum_log.txt'
-    exit_code = None
-    with open(hpsum_log_path) as f:
-        contents = f.readlines()
+def parse_raw_log():
+    result = {
+        'error': False,
+        'exit_code': -99,
+        'exit_message': 'Exit code failed to be parsed!',
+        'reboot_required': False
+    }
 
-    for line in contents:
-        if 'Exit Code' in line:
-            exit_code = line.split(':')[1]
+    raw_log_paths = glob.glob(sum_log_path)
+    if not raw_log_paths:
+        raise HPFirmwareException("Could not find smartupdate log file")
 
-    status = get_return_code_status(int(exit_code))
-    log.info(status.get('message'))
-    if status.get('error_state'):
-        raise HPFirmwareException('Flashing failed with exit code {0}'.format(
-            exit_code))
-    return status.get('reboot_flag')
+    with open(raw_log_paths[0]) as fp:
+        raw_log_list = []
+        for line in fp.readlines():
+            split_line = line.strip().split('|')
+            if 'Exit code' in split_line[-1]:
+                exit_statement, exit_message = split_line[-1].split(',')
+                result['exit_code'] = int(exit_statement.split(':')[1].strip())
+                result['exit_message'] = exit_message.split(':')[1].strip()
+
+                if result['exit_code'] == 1:
+                    result['reboot_required'] = True
+
+            raw_log_list.append('{} : {}'.format(split_line[0],
+                                                 split_line[-1]))
+    result['raw_log'] = raw_log_list
+    return result
 
 
 @capability('hp_apply_bios_settings',
@@ -265,5 +272,4 @@ def hp_update_firmware(url=None, dry_run=False):
 
     # Return code could be a false positive, check log file output
     install_updates(updates_available)
-    reboot_required = parse_log_output_for_errors()
-    return dict(result=dict(return_code=1, success=True, reboot_required=reboot_required))
+    return parse_raw_log()
