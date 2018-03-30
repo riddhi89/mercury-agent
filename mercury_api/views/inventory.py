@@ -59,6 +59,7 @@ def get_inventory(mercury_id):
     :param mercury_id: Device mercury id.
     :return: Inventory object.
     """
+    projection = get_projection_from_qsa()
     data = inventory_client.get_one(mercury_id,
                                     projection=projection)
     if not data:
