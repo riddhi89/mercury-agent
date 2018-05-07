@@ -38,6 +38,10 @@ def create_job():
             'Command is missing from request or is malformed',
             status_code=400)
     query = request.json.get('query')
+    if not isinstance(query, dict):
+        raise HTTPError(
+            'Query is missing from request or is malformed',
+            status_code=400)
     job_id = rpc_client.create_job(query, instruction)
 
     if not job_id:
