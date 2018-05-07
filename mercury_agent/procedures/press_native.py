@@ -20,31 +20,68 @@ from mercury_agent.capabilities import capability
 from mercury_agent.configuration import get_configuration
 from mercury.common.clients.rpc.backend import BackEndClient
 from mercury.common.exceptions import fancy_traceback_short, parse_exception
-from press.configuration.util import set_environment
+
+from press.configuration.util import configuration_from_file
+from press.exceptions import PressCriticalException
+from press.log import setup_logging
 from press.plugin_init import init_plugins
-from press.press import Press
+from press.press import PressOrchestrator
+from press.press_cli import parse_args
 from press.hooks.hooks import clear_hooks
+
 
 log = logging.getLogger(__name__)
 
 
 # noinspection PyBroadException
-def entry(press_configuration):
-    set_environment(get_configuration().get('press_environment', {}))
+def entry(run_configuration, mercury_press_configuration):
+    """
 
+    :param run_configuration: The press state file
+    :param mercury_press_configuration: press environment configuration from
+    mercury-agent.yaml
+    :return:
+    """
     log.info('Initializing plugins')
-    init_plugins(press_configuration)
+    init_plugins(run_configuration,
+                 mercury_press_configuration.get('plugins', {}).get(
+                     'scan_directories'),
+                 mercury_press_configuration.get('plugins', {}).get(
+                     'enabled'
+                 ))
 
     return_data = {}
 
     p = None
     try:
-        p = Press(press_configuration)
+        p = PressOrchestrator(
+            run_configuration,
+            mercury_press_configuration.get('paths', {}).get(
+                'parted', 'parted'),
+            mercury_press_configuration.get('deployment_root', '/mnt/press'),
+            mercury_press_configuration.get('staging_directory', '/.press'),
+            mercury_press_configuration.get('layout', {}).get(
+                'use_fibre_channel', False
+            ),
+            mercury_press_configuration.get('layout', {}).get(
+                'loop_only', False
+            ),
+            mercury_press_configuration.get('partition_table', {}).get(
+                'partition_start', 1048576
+            ),
+            mercury_press_configuration.get('partition_table', {}).get(
+                'alignment', 1048576
+            ),
+            mercury_press_configuration.get('volume_group', {}).get(
+                'pe_size', '4MiB'
+            )
+        )
     except Exception:
         exec_dict = parse_exception()
         log.error('Error during initialization: {}'.format(
             fancy_traceback_short(exec_dict)))
-        return_data = {'error': True, 'message': 'Error during initialization', 'exception': exec_dict}
+        return_data = {'error': True, 'message': 'Error during initialization',
+                       'exception': exec_dict}
 
     if p:
         try:
@@ -53,15 +90,16 @@ def entry(press_configuration):
             exec_dict = parse_exception()
             log.error('Error during deployment: {}'.format(
                 fancy_traceback_short(exec_dict)))
-            return_data = {'error': True, 'message': 'Error during initialization', 'exception': exec_dict}
+            return_data = {'error': True,
+                           'message': 'Error during initialization',
+                           'exception': exec_dict}
         finally:
             if p.layout.committed:
                 time.sleep(2)
                 p.teardown()
 
             # Clear logging handlers!
-            del logging.getLogger('press').handlers[:]  # python2 doesn't have list.clear()
-
+            del logging.getLogger('press').handlers[:]
             # Clear hooks
             clear_hooks()
 
@@ -86,12 +124,16 @@ def press_native(**kwargs):
     press_configuration = kwargs['configuration']
     task_id = kwargs['task_id']
 
+    mercury_configuration = get_configuration()
     add_mercury_plugin_data(press_configuration, task_id)
 
-    backend_client = BackEndClient(get_configuration().agent.remote.backend_url)
+    backend_client = BackEndClient(
+        mercury_configuration.agent.remote.backend_url)
     log.info('Starting press')
     start = time.time()
-    backend_client.update_task({'task_id': task_id, 'action': 'Press: Launching'})
-    return_data = entry(press_configuration)
+    backend_client.update_task({'task_id': task_id,
+                                'action': 'Press: Launching'})
+    return_data = entry(press_configuration,
+                        mercury_configuration.get('press', {}))
     return_data['press_execution_time'] = time.time() - start
     return return_data
