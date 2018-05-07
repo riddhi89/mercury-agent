@@ -13,7 +13,7 @@ agent:
       storcli_path: storcli64
       hpssacli_path: hpssacli
 
-press_environment:
+press:
   paths:
     parted: /usr/bin/parted
   plugins:
@@ -23,20 +23,20 @@ press_environment:
     enabled:
       - mercury
       - server_management
-  press:
-    deployment_root: /mnt/press
-    staging_directory: /.press
 
-    layout:
-      use_fibre_channel: False
-      loop_only: True
+  deployment_root: /mnt/press
+  staging_directory: /.press
 
-    partition_table:
-      partition_start: 1048576,
-      alignment: 1048576
+  layout:
+    use_fibre_channel: False
+    loop_only: True
 
-    volume_group:
-      pe_size: 4MiB
+  partition_table:
+    partition_start: 1048576,
+    alignment: 1048576
+
+  volume_group:
+    pe_size: 4MiB
 
 logging:
   level: INFO
