@@ -11,6 +11,7 @@ from mercury_api.active.views import (
 
 from ..inventory.fixtures import test_mercury_id, inventory_patch
 
+sys.argv.clear()
 
 class TestActiveComputerView(object):
 
