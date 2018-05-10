@@ -33,6 +33,13 @@ from press.hooks.hooks import clear_hooks
 log = logging.getLogger(__name__)
 
 
+def cleanup_thread():
+    # Clear logging handlers!
+    del logging.getLogger('press').handlers[:]
+    # Clear hooks
+    clear_hooks()
+
+
 # noinspection PyBroadException
 def entry(run_configuration, mercury_press_configuration):
     """
@@ -82,6 +89,7 @@ def entry(run_configuration, mercury_press_configuration):
             fancy_traceback_short(exec_dict)))
         return_data = {'error': True, 'message': 'Error during initialization',
                        'exception': exec_dict}
+        cleanup_thread()
 
     if p:
         try:
@@ -98,10 +106,7 @@ def entry(run_configuration, mercury_press_configuration):
                 time.sleep(2)
                 p.teardown()
 
-            # Clear logging handlers!
-            del logging.getLogger('press').handlers[:]
-            # Clear hooks
-            clear_hooks()
+            cleanup_thread()
 
     return return_data
 
