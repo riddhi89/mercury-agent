@@ -21,7 +21,7 @@ from mercury_api.exceptions import HTTPError
 from mercury_api.decorators import validate_json, check_query
 from mercury_api.views import (
     get_projection_from_qsa,
-    get_limit_and_sort_direction,
+    get_paging_info_from_qsa,
     inventory_client,
 )
 
@@ -40,12 +40,15 @@ def list_inventory():
     :return: List of inventory objects.
     """
     projection = get_projection_from_qsa()
-    limit, sort_direction = get_limit_and_sort_direction()
+    paging_info = get_paging_info_from_qsa()
     data = inventory_client.query(
         {},
         projection=projection,
-        limit=limit,
-        sort_direction=sort_direction)
+        limit=paging_info['limit'],
+        sort=paging_info['sort'],
+        sort_direction=paging_info['sort_direction'],
+        offset_id=paging_info['offset_id']
+    )
 
     return jsonify(data)
 
@@ -81,14 +84,16 @@ def query_inventory_devices():
     """
     query = request.json.get('query')
     projection = get_projection_from_qsa()
-    limit, sort_direction = get_limit_and_sort_direction()
+    page_info = get_paging_info_from_qsa()
     log.debug('QUERY: {}'.format(query))
 
     data = inventory_client.query(
         query,
         projection=projection,
-        limit=limit,
-        sort_direction=sort_direction)
+        limit=page_info['limit'],
+        sort=page_info['sort'],
+        sort_direction=page_info['sort_direction'],
+        offset_id=page_info['offset_id'])
     return jsonify(data)
 
 

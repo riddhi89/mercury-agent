@@ -19,7 +19,7 @@ from mercury_api.exceptions import HTTPError
 from mercury_api.decorators import validate_json, check_query
 from mercury_api.views import (
     get_projection_from_qsa,
-    get_limit_and_sort_direction,
+    get_paging_info_from_qsa,
     inventory_client,
 )
 
@@ -35,7 +35,7 @@ def list_active_computers():
     :return: List of inventory objects.
     """
     projection = get_projection_from_qsa()
-    limit, sort_direction = get_limit_and_sort_direction()
+    page_info = get_paging_info_from_qsa()
     if not projection:
         projection = {'mercury_id': 1}
 
@@ -46,8 +46,11 @@ def list_active_computers():
             }
         },
         projection=projection,
-        limit=limit,
-        sort_direction=sort_direction)
+        limit=page_info['limit'],
+        sort=page_info['sort'],
+        sort_direction=page_info['sort_direction'],
+        offset_id=page_info['offset_id']
+    )
 
     return jsonify(data)
 
@@ -87,10 +90,13 @@ def query_active_computers():
     # Make sure we get only active devices
     query.update({'active': {'$ne': None}})
     projection = get_projection_from_qsa()
-    limit, sort_direction = get_limit_and_sort_direction()
+    page_info = get_paging_info_from_qsa()
     data = inventory_client.query(
         query,
         projection=projection,
-        limit=limit,
-        sort_direction=sort_direction)
+        limit=page_info['limit'],
+        sort=page_info['sort'],
+        sort_direction=page_info['sort_direction'],
+        offset_id=page_info['offset_id']
+    )
     return jsonify(data)
