@@ -30,7 +30,7 @@ rpc_url = api_configuration.api.rpc.rpc_router
 
 inventory_client = SimpleInventoryClient(inventory_url,
                                          linger=0,
-                                         response_timeout=5,
+                                         response_timeout=15,
                                          raise_on_timeout=True)
 rpc_client = SimpleRPCFrontEndClient(rpc_url,
                                      linger=0,
