@@ -22,6 +22,8 @@ from mercury_api.configuration import get_api_configuration
 from mercury_api.mercury_clients import SimpleInventoryClient, \
     SimpleRPCFrontEndClient
 
+# TODO: Get all of this out of __init__.py ...
+
 log = logging.getLogger(__name__)
 api_configuration = get_api_configuration()
 
@@ -63,31 +65,16 @@ def get_paging_info_from_qsa():
     """
     delimiters = api_configuration.api.paging.to_dict()
     limit = request.args.get('limit')
-    offset_id = request.args.get('offset_id')
     sort_direction = request.args.get('sort_direction')
 
     if limit and limit.isdigit():
         delimiters['limit'] = int(limit)
-
-    if bson.ObjectId.is_valid(offset_id):
-        delimiters['offset_id'] = offset_id
 
     try:
         delimiters['sort_direction'] = int(sort_direction)
     except (TypeError, ValueError):
         # None == TypeError, anything else == ValueError
         pass
+    delimiters['offset_id'] = request.args.get('offset_id')
+    delimiters['sort'] = request.args.get('sort_key', '_id')
     return delimiters
-
-
-def get_limit_and_sort_direction():
-    """
-    Get the limit and sort direction from the paging method.
-    
-    :return: tuple
-    """
-    paging_data = get_paging_info_from_qsa()
-    limit = paging_data.get('limit')
-    sort_direction = paging_data.get('sort_direction')
-
-    return limit, sort_direction
