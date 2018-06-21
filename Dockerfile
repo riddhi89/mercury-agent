@@ -1,6 +1,7 @@
-FROM jaredrodriguez/mercury-core:0.1.4
+FROM local/mercury-core:latest
 
 ADD . /usr/src/mercury-api
+RUN pip install -r /usr/src/mercury-api/requirements.txt
 RUN cd /usr/src/mercury-api && pip install -e .
 
 CMD mercury-api

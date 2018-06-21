@@ -7,20 +7,13 @@ services:
         environment:
             MERCURY_REPO_DIR: mercury-api
             MERCURY_LOG_LEVEL: DEBUG
-            API_INVENTORY_INVENTORY_ROUTER: tcp://172.16.200.1:9000
-            API_RPC_RPC_ROUTER: tcp://172.16.200.1:9001
-        volumes:
-            - .:/home/mercury
-        networks:
-            - mercury_internal
-            - mercury_public
+            API_INVENTORY_INVENTORY_ROUTER: tcp://mercury-inventory:9000
+            API_RPC_RPC_ROUTER: tcp://mercury-rpc:9001
+        command: mercury-api
 networks:
-    mercury_internal:
+    default:
         external:
-            name: mercury_mercury_internal
-    mercury_public:
-        external:
-            name: mercury_mercury_public
+            name: mercury_default
 
 
 
