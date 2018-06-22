@@ -15,7 +15,7 @@
 
 import logging
 
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 
 from mercury_api.configuration import get_api_configuration
 from mercury_api.app import app
@@ -35,6 +35,7 @@ def main():
 
     try:
         log.info('Starting gevent WSGI service')
+        log.debug(config)
         http_server.serve_forever()
     except KeyboardInterrupt:
         log.info('Stopping gevent WSGI service')

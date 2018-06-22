@@ -1,30 +1,20 @@
 version: "3"
 services:
     mercury_api:
-        build:  
-            # context must be the parent directory where the `mercury`
-            # repo also exists so that the mercury-common project can
-            # be installed. This will be easier once mercury-common is
-            # pip-installable on its own.
-            context: ..
-            dockerfile: ./mercury-api/docker/mercury_api/Dockerfile
+        image: local/mercury-api:latest
         ports:
             - '9005:9005'
         environment:
             MERCURY_REPO_DIR: mercury-api
             MERCURY_LOG_LEVEL: DEBUG
-            MERCURY_API_INVENTORY_ROUTER: tcp://172.16.200.103:9000
-            MERCURY_API_RPC_ROUTER: tcp://172.16.200.104:9001
-        volumes:
-            - .:/home/mercury
-        networks:
-            - mercury_internal
-            - mercury_public
+            API_INVENTORY_INVENTORY_ROUTER: tcp://mercury-inventory:9000
+            API_RPC_RPC_ROUTER: tcp://mercury-rpc:9001
+        command: mercury-api
 networks:
-    mercury_internal:
+    default:
         external:
-            name: mercury_mercury_internal
-    mercury_public:
-        external:
-            name: mercury_mercury_public
+            name: mercury_default
+
+
+
 

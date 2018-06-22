@@ -17,6 +17,8 @@ from mercury.common.configuration import MercuryConfiguration
 
 API_CONFIG_FILE = 'mercury-api.yaml'
 
+# TODO: FIX inconsistent option names
+
 
 def options(configuration):
     """ A single place to add program options """
