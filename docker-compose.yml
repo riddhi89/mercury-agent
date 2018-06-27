@@ -1,0 +1,15 @@
+version: "3"
+services:
+    mercury_agent:
+        image: local/mercury-agent:latest
+        ports:
+            - '9003:9003'
+            - '9004:9004'
+        environment:
+            AGENT_REPO_DIR: mercury-agent
+            AGENT_LOG_LEVEL: DEBUG            
+        command: mercury-agent
+networks:
+    default:
+        external:
+            name: mercury_default

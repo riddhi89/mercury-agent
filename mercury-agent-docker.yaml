@@ -5,8 +5,8 @@ agent:
   log_file: mercury-agent.log
 
   remote:
-    backend_url: tcp://localhost:9002
-    log_service_url: tcp://localhost:9006
+    backend_url: tcp://mercury-backend:9002
+    log_service_url: tcp://mercury-log:9006
 
   hardware:
     raid:
