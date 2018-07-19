@@ -18,10 +18,11 @@ import logging
 
 from mercury_agent.hardware.drivers import DriverBase, driver
 from mercury_agent.hardware.obm.ipmitool import (
-    IPMITool,
     IPMIToolDrac,
     IPMIToolHP,
 )
+
+from mercury_agent.hardware.obm.racadm import SimpleRAC
 
 
 log = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ class IPMIDriverBase(DriverBase):
     def inspect(self):
         return {
             'network': self.handler.net_info,
-            'bmc': self.handler.bmc_info
+            'system': self.handler.bmc_info
         }
 
 
@@ -50,7 +51,8 @@ class HPILODriver(IPMIDriverBase):
     wants = 'pci'
 
     PCI_DEVICE_IDS = [
-        "3306"  # Integrated Lights-Out Standard Slave Instrumentation & System Support
+        "3306"  # Integrated Lights-Out Standard Slave Instrumentation & System
+                # Support
     ]
 
     @classmethod
@@ -59,4 +61,25 @@ class HPILODriver(IPMIDriverBase):
             for my_device_id in cls.PCI_DEVICE_IDS:
                 if pci_device['device_id'] == my_device_id:
                     return True
+        return False
+
+
+@driver()
+class DRACDriver(IPMIDriverBase):
+    name = 'drac'
+    _handler = IPMIToolDrac
+    wants = 'dmi'
+
+    @classmethod
+    def probe(cls, context_data):
+        """ Tests that the server is a dell variant and has a compatible DRAC
+        interface
+
+        :param context_data: DMI information
+        :return:
+        """
+        if context_data['sys_vendor'] == 'Dell Inc.':
+            simple_rac = SimpleRAC()
+            if 'System Information' in simple_rac.getsysinfo:
+                return True
         return False
