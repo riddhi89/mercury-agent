@@ -16,6 +16,7 @@
 
 import logging
 
+from mercury_agent.configuration import get_configuration
 from mercury_agent.hardware.drivers import DriverBase, driver
 from mercury_agent.hardware.obm.ipmitool import (
     IPMIToolDrac,
@@ -79,7 +80,9 @@ class DRACDriver(IPMIDriverBase):
         :return:
         """
         if context_data['sys_vendor'] == 'Dell Inc.':
-            simple_rac = SimpleRAC()
+            simple_rac = SimpleRAC(
+                get_configuration().agent.hardware.obm.racadm_path
+            )
             if 'System Information' in simple_rac.getsysinfo:
                 return True
         return False

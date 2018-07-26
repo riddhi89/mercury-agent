@@ -78,6 +78,12 @@ def parse_options():
                              default='ERROR',
                              help_string='The pong process log level')
 
+    configuration.add_option('agent.hardware.obm.racadm_path',
+                             cli_argument='--racadm-path',
+                             env_variable='RACADM_PATH',
+                             help_string='The location of the racadm binary',
+                             default='racadm')
+
     return configuration.scan_options()
 
 
